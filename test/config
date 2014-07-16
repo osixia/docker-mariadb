@@ -1,0 +1,8 @@
+testImage=mariadb-test
+testContainer=mariadb-test-container
+testDir=/osixia-test-docker-mariadb
+
+export testImage
+export testContainer
+export testDir
+
