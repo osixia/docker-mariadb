@@ -23,8 +23,11 @@ if [ ! -e /var/lib/mysql/docker_bootstrapped ]; then
   # Disable this ability to load local files 
   sed -i '/\[mysqld\]/a\local-infile=0' /etc/mysql/my.cnf
 
-  # Allow Remote Client Access
+  # Allow remote client access
   sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
+
+  # Allow root remote access from Docker default network
+  mysql -u root -p$ROOT_PWD -e "GRANT ALL PRIVILEGES ON *.* TO '${ROOT_USER}'@'172.17.%.%' IDENTIFIED BY '${ROOT_PWD}' WITH GRANT OPTION;"
 
   # Change root username
   mysql -u root -p$ROOT_PWD -e "UPDATE mysql.user SET user='${ROOT_USER}' WHERE user='root';"
