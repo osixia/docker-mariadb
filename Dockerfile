@@ -26,7 +26,7 @@ RUN add-apt-repository 'deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/10.0/ubuntu 
 RUN apt-get -y update
 
 # Install MariaDB Galera Cluster & expect needed for automatic config
-RUN LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y mariadb-server expect
+RUN LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends mariadb-server expect
 
 # Expose MariaDB default port
 EXPOSE 3306
