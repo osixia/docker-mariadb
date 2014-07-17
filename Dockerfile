@@ -17,6 +17,9 @@ ENV HOME /root
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
 
+# A mounted file systems table to make MySQL happy
+RUN cat /proc/mounts > /etc/mtab
+
 # Add MariaDB repository
 RUN apt-get install software-properties-common
 RUN apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
