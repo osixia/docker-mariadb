@@ -35,6 +35,9 @@ RUN LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-reco
 # Expose MariaDB default port
 EXPOSE 3306
 
+# Allow saving data outside the container
+VOLUME ["/var/lib/mysql"]
+
 # Add MariaDB deamon
 RUN mkdir -p /etc/service/mariadb/config
 ADD service/mariadb/mariadb.sh /etc/service/mariadb/run
