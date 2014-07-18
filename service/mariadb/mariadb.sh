@@ -11,12 +11,25 @@ set -x
 : ROOT_PWD=${ROOT_PWD}
 : ALLOW_ROOT_DOCKER_NETWORK=${ALLOW_ROOT_DOCKER_NETWORK}
 
+# fix permissions and ownership of /var/lib/mysql
+chown -R mysql:mysql /var/lib/mysql
+chmod 700 /var/lib/mysql
+
+# Initializes the MySQL data directory and creates the system tables that it contains, if they do not exist
+mysql_install_db
+
 # Start MariaDB
 service mysql start
 
 ############ Base config ############
 if [ ! -e /var/lib/mysql/docker_bootstrapped ]; then
   status "configuring MariaDB database"
+
+  # Get debian user password
+  DEBIAN_PWD=$(cat /etc/mysql/debian.cnf | sed -n 's/.*password = \(.*\)/\1/p' | head -1)
+
+  # Add debian user
+  mysql -e "GRANT ALL PRIVILEGES on *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '${DEBIAN_PWD}' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 
   # Run mysql_secure_installation
   expect config/config.exp
