@@ -9,6 +9,7 @@ status () {
 set -x
 : ROOT_USER=${ROOT_USER}
 : ROOT_PWD=${ROOT_PWD}
+: ALLOW_ROOT_DOCKER_NETWORK=${ALLOW_ROOT_DOCKER_NETWORK}
 
 # Start MariaDB
 service mysql start
@@ -26,8 +27,10 @@ if [ ! -e /var/lib/mysql/docker_bootstrapped ]; then
   # Allow remote client access
   sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 
-  # Allow root remote access from Docker default network
-  mysql -u root -p$ROOT_PWD -e "GRANT ALL PRIVILEGES ON *.* TO '${ROOT_USER}'@'172.17.%.%' IDENTIFIED BY '${ROOT_PWD}' WITH GRANT OPTION;"
+  if [ "$ALLOW_ROOT_DOCKER_NETWORK" = true ] ; then
+    # Allow root remote access from Docker default network
+    mysql -u root -p$ROOT_PWD -e "GRANT ALL PRIVILEGES ON *.* TO '${ROOT_USER}'@'172.17.%.%' IDENTIFIED BY '${ROOT_PWD}' WITH GRANT OPTION;"
+  fi
 
   # Change root username
   mysql -u root -p$ROOT_PWD -e "UPDATE mysql.user SET user='${ROOT_USER}' WHERE user='root';"

@@ -7,6 +7,7 @@ MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.fr>
 # Default configuration: can be overridden at the docker command line
 ENV ROOT_USER admin
 ENV ROOT_PWD toor
+ENV ALLOW_ROOT_DOCKER_NETWORK false
 
 # Set correct environment variables.
 ENV HOME /root
