@@ -1,4 +1,4 @@
 docker-mariadb
 ==============
 
-A docker.io image to run MariaDB
+A docker image to run MariaDB
