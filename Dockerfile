@@ -1,4 +1,4 @@
-FROM osixia/baseimage:0.6.0
+FROM osixia/baseimage:0.9.0
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.fr>
 
 # /!\ Mount /var/lib/mysql as data volume 
@@ -17,9 +17,6 @@ ENV HOME /root
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
-
-# A mounted file systems table to make MySQL happy
-RUN cat /proc/mounts > /etc/mtab
 
 # Add MariaDB repository
 RUN apt-get install software-properties-common
