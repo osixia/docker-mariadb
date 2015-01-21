@@ -65,7 +65,7 @@ EOSQL
   echo 'FLUSH PRIVILEGES ;' >> "$TEMP_FILE"
 
   # execute config queries
-  mysql -u root < "$TEMP_FILE"
+  mysql -u root < $TEMP_FILE
 
   rm $TEMP_FILE
 
