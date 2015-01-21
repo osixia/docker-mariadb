@@ -1,12 +1,9 @@
 FROM osixia/baseimage:0.10.1
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
-# /!\ Mount /var/lib/mysql as data volume 
-# to save mysql data outside the container
-
 # Default configuration: can be overridden at the docker command line
 ENV ROOT_USER admin
-ENV ROOT_PWD toor
+ENV ROOT_PWD admin
 ENV ROOT_ALLOWED_NETWORKS localhost,127.0.0.1,::1
 
 # MariaDb version

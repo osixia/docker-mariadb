@@ -6,7 +6,7 @@ VERSION = 0.2.1
 all: build
 
 build:
-	docker build -t $(NAME):$(VERSION) --rm .
+	docker build -t $(NAME):$(VERSION) --rm image
 
 test:
 	env NAME=$(NAME) VERSION=$(VERSION) ./test.sh debug
@@ -16,7 +16,7 @@ tag_latest:
 
 release: build test tag_latest
 	@if ! docker images $(NAME) | awk '{ print $$2 }' | grep -q -F $(VERSION); then echo "$(NAME) version $(VERSION) is not yet built. Please run 'make build'"; false; fi
-	@if ! head -n 1 CHANGELOG.md | grep -q 'release date'; then echo 'Please note the release date in Changelog.md.' && false; fi
+	@if ! head -n 1 CHANGELOG.md | grep -q 'release date'; then echo 'Please note the release date in CHANGELOG.md.' && false; fi
 	docker push $(NAME)
 	@echo "*** Don't forget to run 'twgit release/hotfix finish' :)"
 
