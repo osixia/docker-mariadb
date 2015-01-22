@@ -1,12 +1,16 @@
 FROM osixia/baseimage:0.10.1
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
-# Default configuration: can be overridden at the docker command line
+## Default configuration: can be overridden at the docker command line
+# Needed for uninitialized and initialized database 
 ENV ROOT_USER admin
 ENV ROOT_PWD admin
-ENV ROOT_ALLOWED_NETWORKS localhost,127.0.0.1,::1
 
-# MariaDb version
+# Needed for uninitialized database
+ENV ROOT_ALLOWED_NETWORKS localhost,127.0.0.1,::1
+##
+
+# MariaDB version
 ENV MARIADB_MAJOR 10.0
 ENV MARIADB_VERSION 10.0.15+maria-1~trusty
 
@@ -40,7 +44,6 @@ VOLUME ["/var/lib/mysql"]
 # Add MariaDB container start config & daemon
 ADD service/mariadb/container-start.sh /etc/my_init.d/mariadb
 ADD service/mariadb/daemon.sh /etc/service/mariadb/run
-
 
 # Clear out the local repository of retrieved package files
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

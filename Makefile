@@ -9,7 +9,7 @@ build:
 	docker build -t $(NAME):$(VERSION) --rm image
 
 test:
-	env NAME=$(NAME) VERSION=$(VERSION) ./test.sh debug
+	env NAME=$(NAME) VERSION=$(VERSION) bats test/test.bats
 
 tag_latest:
 	docker tag -f $(NAME):$(VERSION) $(NAME):latest
