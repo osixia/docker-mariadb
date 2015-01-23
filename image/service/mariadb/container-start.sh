@@ -19,12 +19,6 @@ if [ -z "$(ls -A /var/lib/mysql)" ]; then
   # Initializes the MySQL data directory and creates the system tables that it contains
   mysql_install_db --datadir=/var/lib/mysql
 
-  # allow remote connection
-  sed -ri 's/^(bind-address|skip-networking)/;\1/' /etc/mysql/my.cnf
-
-  # Disable local files loading
-  sed -i '/\[mysqld\]/a\local-infile=0' /etc/mysql/my.cnf
-
   # Start MariaDB
   service mysql start || true
 

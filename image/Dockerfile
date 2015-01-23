@@ -34,15 +34,19 @@ RUN apt-get -y update \
     && rm -rf /var/lib/mysql \
     && mkdir /var/lib/mysql
 
-# Expose MariaDB default port
-EXPOSE 3306
-
-# Save this directory outside the container
-VOLUME ["/var/lib/mysql"]
+# Run install script
+ADD service/install.sh /tmp/install.sh
+RUN ./tmp/install.sh && rm /tmp/install.sh
 
 # Add MariaDB container start config & daemon
 ADD service/mariadb/container-start.sh /etc/my_init.d/mariadb
 ADD service/mariadb/daemon.sh /etc/service/mariadb/run
+
+# Set MariaDB database directory in a data volume
+VOLUME ["/var/lib/mysql"]
+
+# Expose MariaDB default port
+EXPOSE 3306
 
 # Clear out the local repository of retrieved package files
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
