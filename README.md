@@ -1,23 +1,6 @@
-# docker-mariadb
+# osixia/mariadb
 
-A docker image to run a MariaDB server
-
-## What is MariaDB?
-
-MariaDB is a community-developed fork of the MySQL relational database
-management system intended to remain free under the GNU GPL. Being a fork of a
-leading open source software system, it is notable for being led by the original
-developers of MySQL, who forked it due to concerns over its acquisition by
-Oracle. Contributors are required to share their copyright with the MariaDB
-Foundation.
-
-The intent is also to maintain high compatibility with MySQL, ensuring a
-"drop-in" replacement capability with library binary equivalency and exact
-matching with MySQL APIs and commands. It includes the XtraDB storage engine for
-replacing InnoDB, as well as a new storage engine, Aria, that intends to be both
-a transactional and non-transactional engine perhaps even included in future
-versions of MySQL.
-
+A docker image to run a MariaDB server.
 > [wikipedia.org/wiki/MariaDB](https://en.wikipedia.org/wiki/MariaDB)
 
 ## Quick start
@@ -26,7 +9,7 @@ Run MariaDB docker image :
 	docker run -d osixia/mariadb
 
 This start a new container with a MariaDB server running inside.
-The odd string printed by the command is the `CONTAINER_ID`.
+The odd string printed by this command is the `CONTAINER_ID`.
 We are going to use this `CONTAINER_ID` to execute some commands inside the container.
 
 First we run a terminal on this container,
@@ -35,7 +18,7 @@ make sure to replace `CONTAINER_ID` by your container id :
 	docker exec -it CONTAINER_ID bash
 
 You should now be in the container terminal, 
-to properly use this terminal we need to fix the TERM environement variable :
+to properly use this terminal we need to fix the TERM environment variable :
 
 	export TERM=xterm
 
@@ -44,13 +27,13 @@ We can now connect to the MariaDB server using mysql command line tool :
 	mysql -u admin -padmin
 
 
-## How to use this image
+## Examples
 
 ### Create new database
 This is the default behaviour when you run the image.
 
 It will create an empty database, with a root and a debian-sys-maint user (required by MariaDB to run properly on ubuntu).
-The default root username and password can be changed at the docker command line, for example :
+The default root username (admin) and password (admin) can be changed at the docker command line, for example :
 
 	docker run -e ROOT_USER=JaxTeller -e ROOT_PWD=SonsOfAnarchy -d osixia/mariadb
 
@@ -63,43 +46,67 @@ For example if you want to allow MariaDB root login from docker default network 
 	-d osixia/mariadb
 
 
-All variables can be combined :
-
-	docker run -e ROOT_USER=JaxTeller \
-	-e ROOT_PWD=SonsOfAnarchy \
-	-e ROOT_ALLOWED_NETWORKS=172.17.%.%,localhost,127.0.0.1,::1 \
-	-d osixia/mariadb
-
-
 #### Full example
 This example will run a docker MariaDB container and execute an sql query from docker host:
 
-	CONTAINER_ID=$(docker run -e ROOT_USER=JaxTeller -e ROOT_PWD=SonsOfAnarchy -e ROOT_ALLOWED_NETWORKS=172.17.%.%,localhost,127.0.0.1,::1 -d osixia/mariadb)
+	CONTAINER_ID=$(docker run -e ROOT_USER=JaxTeller \
+		-e ROOT_PWD=SonsOfAnarchy \
+		-e ROOT_ALLOWED_NETWORKS=172.17.%.%,localhost,127.0.0.1,::1 \
+		-d osixia/mariadb)
 
 	CONTAINER_IP=$(docker.io inspect -f "{{ .NetworkSettings.IPAddress }}" $CONTAINER_ID)
 
 	mysql -u JaxTeller -pSonsOfAnarchy -h $CONTAINER_IP -e "select user,host from mysql.user"
 
 
-### Using an existing MariaDB database
+#### Data persitance
 
-This can be achived by using docker volume capabilities.
-Assuming you have a MariaDB database on your docker host in the directory /data/mariadb/
+The directory `/var/lib/mysql` (witch contains all MariaDB database files) has been declared as a volume, so your database files are saved outside the container in a data volume.
 
-simply mount this volume to /var/lib/mysql :
+This mean that you can stop, and restart the container and get back your database without losing any data. But if you remove the container, the data volume will me removed too, except if you have linked this data volume to an other container.
 
-	docker run -v 
+For more information about docker data volume, please refer to :
 
+> [https://docs.docker.com/userguide/dockervolumes/](https://docs.docker.com/userguide/dockervolumes/)
 
+### Use an existing MariaDB database
 
-## Data persitance
+This can be achieved by mounting a host container as data volume. 
+Assuming you have a MariaDB database on your docker host in the directory `/data/mariadb/CoolDb`
+simply mount this directory as a volume to `/var/lib/mysql` :
 
+	docker run -v /data/mariadb/CoolDb:/var/lib/mysql \
+	-e ROOT_USER=MyCoolDbRootUser \
+	-e ROOT_PWD=MyCoolDbRootPassword \
+	-d osixia/mariadb
+
+You can also use data volume containers. Please refer to :
+> [https://docs.docker.com/userguide/dockervolumes/](https://docs.docker.com/userguide/dockervolumes/)
 
 ## Environment Variables
 
-Needed for uninitialized and initialized database :
-- **ROOT_USER**: The root username. Defaults to `admin`
-- **ROOT_PWD**: The root password. Defaults to `admin`
+Required for uninitialized and initialized database :
+- **ROOT_USER**: The database root username. Defaults to `admin`
+- **ROOT_PWD**: The database root password. Defaults to `admin`
 
-Needed only for uninitialized database
-- **ROOT_ALLOWED_NETWORKS**: root login will be allowed only from those networks. Defaults to `localhost,127.0.0.1,::1`
+Required only for uninitialized database
+- **ROOT_ALLOWED_NETWORKS**: root login will only be allowed from those networks. Defaults to `localhost,127.0.0.1,::1`
+
+## Manual build
+
+Clone this project, and run `make build` :
+
+	git clone https://github.com/osixia/docker-mariadb
+	cd docker-mariadb
+	sudo make build
+
+## Tests
+
+We use **Bats** (Bash Automated Testing System) to test this image:
+
+> [https://github.com/sstephenson/bats](https://github.com/sstephenson/bats)
+
+Install Bats, and in this project directory run :
+
+	sudo make test
+

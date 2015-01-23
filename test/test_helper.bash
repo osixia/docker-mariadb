@@ -31,20 +31,20 @@ clear_container() {
   remove_container
 }
 
-test_service() {
+is_service_running() {
   docker exec $CONTAINER_ID ps cax | grep $1  > /dev/null
 }
 
 wait_service() {
   
   # first wait image init end
-  while ! test_service syslog-ng
+  while ! is_service_running syslog-ng
   do
     sleep 1
   done
 
   # wait service
-  while ! test_service $1
+  while ! is_service_running $1
   do
     sleep 1
   done

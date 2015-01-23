@@ -2,13 +2,12 @@ FROM osixia/baseimage:0.10.1
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 ## Default configuration: can be overridden at the docker command line
-# Needed for uninitialized and initialized database 
+# Required for uninitialized and initialized database 
 ENV ROOT_USER admin
 ENV ROOT_PWD admin
 
-# Needed for uninitialized database
+# Required for uninitialized database
 ENV ROOT_ALLOWED_NETWORKS localhost,127.0.0.1,::1
-##
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.0
@@ -28,7 +27,7 @@ RUN groupadd -r mysql && useradd -r -g mysql mysql
 RUN apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
 RUN echo "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/ubuntu trusty main" > /etc/apt/sources.list.d/mariadb.list
 
-# Install MariaDB needed for automatic config
+# Install MariaDB and remove default db
 RUN apt-get -y update \ 
     && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     mariadb-server=$MARIADB_VERSION \
@@ -38,7 +37,7 @@ RUN apt-get -y update \
 # Expose MariaDB default port
 EXPOSE 3306
 
-# Allow saving data outside the container
+# Save this directory outside the container
 VOLUME ["/var/lib/mysql"]
 
 # Add MariaDB container start config & daemon
