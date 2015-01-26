@@ -1,4 +1,4 @@
-FROM osixia/baseimage:0.10.1
+FROM osixia/baseimage:0.10.2
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 ## Default configuration: can be overridden at the docker command line
