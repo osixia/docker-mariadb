@@ -11,7 +11,7 @@ ENV ROOT_ALLOWED_NETWORKS localhost,127.0.0.1,::1
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.0
-ENV MARIADB_VERSION 10.0.15+maria-1~trusty
+ENV MARIADB_VERSION 10.0.16+maria-1~trusty
 
 # Set correct environment variables.
 ENV HOME /root
