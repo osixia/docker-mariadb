@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 FIRST_START_DONE="/etc/docker-mariadb-first-start-done"
 
