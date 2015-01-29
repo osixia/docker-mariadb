@@ -37,11 +37,9 @@ EOSQL
     IFS=', ' read -a networks <<< "$ROOT_ALLOWED_NETWORKS"
     for network in "${networks[@]}"
     do
-      echo "CREATE USER '$ROOT_USER'@'$network' IDENTIFIED BY '$ROOT_PWD' ;" >> "$TEMP_FILE"
-      echo "GRANT ALL ON *.* TO '$ROOT_USER'@'$network' WITH GRANT OPTION ;" >> "$TEMP_FILE"
+      echo "GRANT ALL ON *.* TO '$ROOT_USER'@'$network' IDENTIFIED BY '$ROOT_PWD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
     done
 
-    echo "CREATE USER 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;" >> "$TEMP_FILE"
     echo "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;" >> "$TEMP_FILE"
     
     # flush privileges
@@ -66,7 +64,6 @@ EOSQL
     cat > "$TEMP_FILE" <<-EOSQL
         DELETE FROM mysql.user where user = 'debian-sys-maint' ;
         FLUSH PRIVILEGES ;
-        CREATE USER 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;
         GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;
         FLUSH PRIVILEGES ;
 EOSQL
