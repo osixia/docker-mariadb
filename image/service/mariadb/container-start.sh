@@ -37,7 +37,7 @@ EOSQL
     IFS=', ' read -a networks <<< "$ROOT_ALLOWED_NETWORKS"
     for network in "${networks[@]}"
     do
-      echo "GRANT ALL ON *.* TO '$ROOT_USER'@'$network' IDENTIFIED BY '$ROOT_PWD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
+      echo "GRANT ALL PRIVILEGES ON *.* TO '$ROOT_USER'@'$network' IDENTIFIED BY '$ROOT_PWD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
     done
 
     echo "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;" >> "$TEMP_FILE"
