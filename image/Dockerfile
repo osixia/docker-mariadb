@@ -15,9 +15,6 @@ CMD ["/sbin/my_init"]
 # https://github.com/docker-library/mariadb/blob/master/10.0/Dockerfile
 RUN groupadd -r mysql && useradd -r -g mysql mysql
 
-# Add install script
-ADD service/install.sh /tmp/install.sh
-
 # Add MariaDB repository
 RUN apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db \
 	&& echo "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/ubuntu trusty main" > /etc/apt/sources.list.d/mariadb.list
@@ -28,8 +25,13 @@ RUN apt-get -y update \
     && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     mariadb-server=$MARIADB_VERSION \
     && rm -rf /var/lib/mysql \
-    && mkdir /var/lib/mysql \
-    && ./tmp/install.sh && rm /tmp/install.sh \
+    && mkdir /var/lib/mysql 
+
+# Add install script
+ADD service/install.sh /tmp/install.sh
+
+# Run install script and clean all
+RUN ./tmp/install.sh && rm /tmp/install.sh \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add default env variables
