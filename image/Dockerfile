@@ -20,7 +20,6 @@ RUN apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a
 	&& echo "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/ubuntu trusty main" > /etc/apt/sources.list.d/mariadb.list
 
 # Install MariaDB , remove default db,
-# run install script and clean all
 RUN apt-get -y update \ 
     && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     mariadb-server=$MARIADB_VERSION \
