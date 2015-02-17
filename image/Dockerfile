@@ -34,7 +34,7 @@ RUN ./tmp/install.sh && rm /tmp/install.sh \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add default env variables
-ADD env.yaml /etc/env.yaml
+ADD env.yml /etc/env.yml
 
 # Add MariaDB container start config & daemon
 ADD service/mariadb/container-start.sh /etc/my_init.d/mariadb
