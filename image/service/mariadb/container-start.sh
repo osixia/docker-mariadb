@@ -34,6 +34,11 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 EOSQL
 
     # add root user on specified networks
+    # $ROOT_ALLOWED_NETWORKS contains string like ['localhost', '127.0.0.1', '::1']
+    # get ride of [ ] and '
+    $ROOT_ALLOWED_NETWORKS=$(echo "$ROOT_ALLOWED_NETWORKS" | tr -d "[]'")
+
+    # split $ROOT_ALLOWED_NETWORKS by ,
     IFS=', ' read -a networks <<< "$ROOT_ALLOWED_NETWORKS"
     for network in "${networks[@]}"
     do
