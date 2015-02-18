@@ -34,15 +34,10 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 EOSQL
 
     # add root user on specified networks
-    # $ROOT_ALLOWED_NETWORKS contains string like ['localhost', '127.0.0.1', '::1']
-    # get ride of [ ] and '
-    $ROOT_ALLOWED_NETWORKS=$(echo "$ROOT_ALLOWED_NETWORKS" | tr -d "[]'")
-
-    # split $ROOT_ALLOWED_NETWORKS by ,
-    IFS=', ' read -a networks <<< "$ROOT_ALLOWED_NETWORKS"
-    for network in "${networks[@]}"
+    ROOT_ALLOWED_NETWORKS=($ROOT_ALLOWED_NETWORKS)
+    for network in "${ROOT_ALLOWED_NETWORKS[@]}"
     do
-      echo "GRANT ALL PRIVILEGES ON *.* TO '$ROOT_USER'@'$network' IDENTIFIED BY '$ROOT_PWD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
+      echo "GRANT ALL PRIVILEGES ON *.* TO '$ROOT_USER'@'${!network}' IDENTIFIED BY '$ROOT_PWD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
     done
 
     echo "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;" >> "$TEMP_FILE"

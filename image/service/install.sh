@@ -1,6 +1,9 @@
 #!/bin/bash -e
 # this script is run during the image build
 
+# set python encoded envvar to decode
+touch /etc/decode-envvar/ROOT_ALLOWED_NETWORKS
+
 # MariaDB config
 
 # Allow remote connection
