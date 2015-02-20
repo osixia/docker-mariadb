@@ -9,6 +9,7 @@ build_image() {
 
 run_image() {
   CONTAINER_ID=$(docker run $@ -d $IMAGE_NAME)
+  CONTAINER_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $CONTAINER_ID)
 }
 
 start_container() {
@@ -51,4 +52,3 @@ wait_service() {
 
   sleep 5
 }
-

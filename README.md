@@ -54,7 +54,7 @@ This example will run a docker MariaDB container and execute an sql query from d
 		-e ROOT_ALLOWED_NETWORKS="['172.17.%.%', 'localhost', '127.0.0.1', '::1']" \
 		-d osixia/mariadb)
 
-	CONTAINER_IP=$(docker.io inspect -f "{{ .NetworkSettings.IPAddress }}" $CONTAINER_ID)
+	CONTAINER_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $CONTAINER_ID)
 
 	mysql -u JaxTeller -pSonsOfAnarchy -h $CONTAINER_IP -e "select user,host from mysql.user"
 
