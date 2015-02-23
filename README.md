@@ -42,7 +42,7 @@ This can also be changed at the docker command line.
 
 For example if you want to allow MariaDB root login from docker default network and localhost :
 
-	docker run -e ROOT_ALLOWED_NETWORKS=172.17.%.%,localhost,127.0.0.1,::1 \
+	docker run -e ROOT_ALLOWED_NETWORKS="['172.17.%.%', 'localhost', '127.0.0.1', '::1']" \
 	-d osixia/mariadb
 
 
@@ -51,10 +51,10 @@ This example will run a docker MariaDB container and execute an sql query from d
 
 	CONTAINER_ID=$(docker run -e ROOT_USER=JaxTeller \
 		-e ROOT_PWD=SonsOfAnarchy \
-		-e ROOT_ALLOWED_NETWORKS=172.17.%.%,localhost,127.0.0.1,::1 \
+		-e ROOT_ALLOWED_NETWORKS="['172.17.%.%', 'localhost', '127.0.0.1', '::1']" \
 		-d osixia/mariadb)
 
-	CONTAINER_IP=$(docker.io inspect -f "{{ .NetworkSettings.IPAddress }}" $CONTAINER_ID)
+	CONTAINER_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $CONTAINER_ID)
 
 	mysql -u JaxTeller -pSonsOfAnarchy -h $CONTAINER_IP -e "select user,host from mysql.user"
 
@@ -90,7 +90,7 @@ Required for uninitialized and initialized database :
 - **ROOT_PWD**: The database root password. Defaults to `admin`
 
 Required only for uninitialized database
-- **ROOT_ALLOWED_NETWORKS**: root login will only be allowed from those networks. Defaults to `localhost,127.0.0.1,::1`
+- **ROOT_ALLOWED_NETWORKS**: root login will only be allowed from those networks. Defaults to `['localhost', '127.0.0.1', '::1']`
 
 ## Manual build
 
