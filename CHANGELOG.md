@@ -1,4 +1,4 @@
-## 0.2.2 (release date: 2015-01-26)
+## 0.2.2 (release date: 2015-02-23)
   - Update baseimage from 0.10.1 to 10.2
   - Fix install bugs
 
