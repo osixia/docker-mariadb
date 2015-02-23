@@ -1,3 +1,7 @@
+## 0.2.2 (release date: 2015-02-23)
+  - Update baseimage from 0.10.1 to 10.2
+  - Fix install bugs
+
 ## 0.2.1 (release date: 2015-01-23)
   - Update baseimage from 0.9.0 to 10.1
   - Use Bats as testing tools
