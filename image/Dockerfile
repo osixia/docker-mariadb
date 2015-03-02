@@ -1,12 +1,9 @@
-FROM osixia/baseimage:0.10.2
+FROM osixia/baseimage:0.10.3
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.0
-ENV MARIADB_VERSION 10.0.16+maria-1~trusty
-
-# Set correct environment variables.
-ENV HOME /root
+ENV MARIADB_VERSION 10.0.17+maria-1~trusty
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
@@ -26,8 +23,9 @@ RUN apt-get -y update \
     && rm -rf /var/lib/mysql \
     && mkdir /var/lib/mysql 
 
-# Add install script
+# Add install script and MariaDB assets
 ADD service/install.sh /tmp/install.sh
+ADD service/mariadb/assets /osixia/mariadb
 
 # Run install script and clean all
 RUN ./tmp/install.sh && rm /tmp/install.sh \

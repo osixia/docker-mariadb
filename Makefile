@@ -1,5 +1,5 @@
 NAME = osixia/mariadb
-VERSION = 0.2.2
+VERSION = 0.2.3
 
 .PHONY: all build test tag_latest release
 
