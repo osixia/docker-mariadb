@@ -1,12 +1,9 @@
-FROM osixia/baseimage:0.10.2
+FROM osixia/baseimage:0.10.3
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.0
-ENV MARIADB_VERSION 10.0.16+maria-1~trusty
-
-# Set correct environment variables.
-ENV HOME /root
+ENV MARIADB_VERSION 10.0.17+maria-1~trusty
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
@@ -17,20 +14,21 @@ RUN groupadd -r mysql && useradd -r -g mysql mysql
 
 # Add MariaDB repository
 RUN apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db \
-	&& echo "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/ubuntu trusty main" > /etc/apt/sources.list.d/mariadb.list
+    && echo "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/ubuntu trusty main" > /etc/apt/sources.list.d/mariadb.list
 
 # Install MariaDB , remove default db,
-RUN apt-get -y update \ 
+RUN apt-get -y update \
     && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     mariadb-server=$MARIADB_VERSION \
     && rm -rf /var/lib/mysql \
     && mkdir /var/lib/mysql 
 
-# Add install script
+# Add install script and MariaDB assets
 ADD service/install.sh /tmp/install.sh
+ADD service/mariadb/assets /osixia/mariadb
 
 # Run install script and clean all
-RUN ./tmp/install.sh && rm /tmp/install.sh \
+RUN ./tmp/install.sh \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add default env variables
