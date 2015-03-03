@@ -37,7 +37,11 @@ EOSQL
     ROOT_ALLOWED_NETWORKS=($ROOT_ALLOWED_NETWORKS)
     for network in "${ROOT_ALLOWED_NETWORKS[@]}"
     do
-      echo "GRANT ALL PRIVILEGES ON *.* TO '$ROOT_USER'@'${!network}' IDENTIFIED BY '$ROOT_PWD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
+      if [ -n "${!network}" ]; then
+        echo "GRANT ALL PRIVILEGES ON *.* TO '$ROOT_USER'@'${!network}' IDENTIFIED BY '$ROOT_PWD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
+      else
+        echo "GRANT ALL PRIVILEGES ON *.* TO '$ROOT_USER'@'${network}' IDENTIFIED BY '$ROOT_PWD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
+      fi
     done
 
     echo "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;" >> "$TEMP_FILE"
