@@ -99,6 +99,14 @@ Clone this project, and run `make build` :
 	git clone https://github.com/osixia/docker-mariadb
 	cd docker-mariadb
 	sudo make build
+	
+### Use custom my.cnf
+
+Add your custom **my.cnf** in the directory **image/service/mariadb/assets** and rebuild the image.
+
+Note: you can also use your custom config at run time, mount your **my.cnf** file to **/etc/mysql/my.cnf**
+
+	docker run -v /path/to/my.cnf:/etc/mysql/my.cnf -d osixia/mariadb
 
 ## Tests
 
