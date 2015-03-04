@@ -83,6 +83,14 @@ simply mount this directory as a volume to `/var/lib/mysql` :
 You can also use data volume containers. Please refer to :
 > [https://docs.docker.com/userguide/dockervolumes/](https://docs.docker.com/userguide/dockervolumes/)
 
+### Use custom my.cnf
+
+Add your custom **my.cnf** in the directory **image/service/mariadb/assets** and rebuild the image ([see manual build](#manual-build)).
+
+Or you can set your custom config at run time, by mouting your **my.cnf** file to **/etc/mysql/my.cnf**
+
+	docker run -v /path/to/my.cnf:/etc/mysql/my.cnf -d osixia/mariadb
+
 ## Environment Variables
 
 Environement variables defaults are set in **image/env.yml**. You can modify environment variable values directly in this file and rebuild the image ([see manual build](#manual-build)) or you can override those values at run time with -e argument but they must be converted as python string. See example below.
@@ -138,14 +146,6 @@ Build your image :
 Run your image :
 
 	docker run -d billy-the-king/mariadb:0.1.0
-	
-### Use custom my.cnf
-
-Add your custom **my.cnf** in the directory **image/service/mariadb/assets** and rebuild the image.
-
-Note: you can also use your custom config at run time, mount your **my.cnf** file to **/etc/mysql/my.cnf**
-
-	docker run -v /path/to/my.cnf:/etc/mysql/my.cnf -d osixia/mariadb
 
 ## Tests
 
