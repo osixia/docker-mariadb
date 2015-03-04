@@ -85,7 +85,7 @@ You can also use data volume containers. Please refer to :
 
 ## Environment Variables
 
-Environement variables defaults are set in **image/env.yml**. You can modify environment variable values directly in this file and rebuild the image ([see manual build](#manual-build)) or you can override those values at run time with -e argument but they must be converted as python string. You can use [this](http://yaml-online-parser.appspot.com/) to convert yaml to python. See example below.
+Environement variables defaults are set in **image/env.yml**. You can modify environment variable values directly in this file and rebuild the image ([see manual build](#manual-build)) or you can override those values at run time with -e argument but they must be converted as python string. See example below.
 
 Required for uninitialized and initialized database :
 - **ROOT_USER**: The database root username. Defaults to `admin`
@@ -93,6 +93,27 @@ Required for uninitialized and initialized database :
 
 Required only for uninitialized database :
 - **ROOT_ALLOWED_NETWORKS**: root login will only be allowed from those networks. Defaults to `['localhost', '127.0.0.1', '::1']`
+
+### Set environment variable at run time :
+
+String environment variable can be set directly by adding the -e argument in the command line, for example :
+	
+	docker run -e ROOT_USER="JaxTeller" -e ROOT_PWD="Sons Of Anarchy" -d osixia/mariadb
+
+For more complexe environment variable like ROOT_ALLOWED_NETWORKS there value must be set in python.
+As you can see in **image/env.yml** the variable ROOT_ALLOWED_NETWORKS is a table of network adresses :
+
+	  - localhost
+	  - 127.0.0.1
+	  - ::1
+
+So if we want to set this environement variable at run time, first we convert it to a python string with [this tool](http://yaml-online-parser.appspot.com/) for example, it become :
+
+	['localhost', '127.0.0.1', '::1']
+
+Then we run the image by adding the the -e argument with this python string :
+
+	docker run -e ROOT_ALLOWED_NETWORKS="['localhost', '127.0.0.1', '::1']" -d osixia/mariadb
 
 ## Manual build
 
