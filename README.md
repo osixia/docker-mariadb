@@ -102,7 +102,7 @@ Required for uninitialized and initialized database :
 Required only for uninitialized database :
 - **ROOT_ALLOWED_NETWORKS**: root login will only be allowed from those networks. Defaults to `['localhost', '127.0.0.1', '::1']`
 
-### Set environment variable at run time :
+### Set environment variables at run time :
 
 String environment variable can be set directly by adding the -e argument in the command line, for example :
 	
