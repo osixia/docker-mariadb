@@ -85,11 +85,13 @@ You can also use data volume containers. Please refer to :
 
 ## Environment Variables
 
+Environement variable defaults are set in **image/env.yml**.
+
 Required for uninitialized and initialized database :
 - **ROOT_USER**: The database root username. Defaults to `admin`
 - **ROOT_PWD**: The database root password. Defaults to `admin`
 
-Required only for uninitialized database
+Required only for uninitialized database :
 - **ROOT_ALLOWED_NETWORKS**: root login will only be allowed from those networks. Defaults to `['localhost', '127.0.0.1', '::1']`
 
 ## Manual build
