@@ -85,7 +85,7 @@ You can also use data volume containers. Please refer to :
 
 ## Environment Variables
 
-Environement variable defaults are set in **image/env.yml**.
+Environement variables defaults are set in **image/env.yml**. You can modify environment variable values directly in this file and rebuild the image ([see manual build](#manual-build)) or you can override those values at run time with -e argument but they must be converted as python string. You can use [this](http://yaml-online-parser.appspot.com/) to convert yaml to python. See example below.
 
 Required for uninitialized and initialized database :
 - **ROOT_USER**: The database root username. Defaults to `admin`
@@ -96,11 +96,27 @@ Required only for uninitialized database :
 
 ## Manual build
 
-Clone this project, and run `make build` :
+Clone this project :
 
 	git clone https://github.com/osixia/docker-mariadb
 	cd docker-mariadb
-	sudo make build
+
+Adapt Makefile, set your image NAME and VERSION, for example :
+
+	NAME = osixia/mariadb
+	VERSION = 0.2.4
+	
+	becomes :
+	NAME = billy-the-king/mariadb
+	VERSION = 0.1.0
+
+Build your image :
+	
+	make build
+	
+Run your image :
+
+	docker run -d billy-the-king/mariadb:0.1.0
 	
 ### Use custom my.cnf
 
@@ -118,5 +134,5 @@ We use **Bats** (Bash Automated Testing System) to test this image:
 
 Install Bats, and in this project directory run :
 
-	sudo make test
+	make test
 
