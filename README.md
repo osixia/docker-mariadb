@@ -101,17 +101,17 @@ String environment variable can be set directly by adding the -e argument in the
 	docker run -e ROOT_USER="JaxTeller" -e ROOT_PWD="Sons Of Anarchy" -d osixia/mariadb
 
 For more complexe environment variable like ROOT_ALLOWED_NETWORKS there value must be set in python.
-As you can see in **image/env.yml** the variable ROOT_ALLOWED_NETWORKS is a table of network adresses :
+As you can see in **image/env.yml** the variable ROOT_ALLOWED_NETWORKS is a list of network adresses :
 
 	  - localhost
 	  - 127.0.0.1
 	  - ::1
 
-So if we want to set this environement variable at run time, first we convert it to a python string with [this tool](http://yaml-online-parser.appspot.com/) for example, it become :
+So if we want to set this environement variable at run time, first we convert it to a python string (use [this tool](http://yaml-online-parser.appspot.com/) for example), it become :
 
 	['localhost', '127.0.0.1', '::1']
 
-Then we run the image by adding the the -e argument with this python string :
+Then we run the image by adding the the -e argument with the python string :
 
 	docker run -e ROOT_ALLOWED_NETWORKS="['localhost', '127.0.0.1', '::1']" -d osixia/mariadb
 
