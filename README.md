@@ -71,7 +71,7 @@ For more information about docker data volume, please refer to :
 
 ### Use an existing MariaDB database
 
-This can be achieved by mounting a host container as data volume. 
+This can be achieved by mounting a host directory as data volume. 
 Assuming you have a MariaDB database on your docker host in the directory `/data/mariadb/CoolDb`
 simply mount this directory as a volume to `/var/lib/mysql` :
 
