@@ -1,5 +1,5 @@
 NAME = osixia/mariadb
-VERSION = 0.2.4
+VERSION = 0.2.5
 
 .PHONY: all build test tag_latest release
 
@@ -19,4 +19,3 @@ release: build test tag_latest
 	@if ! head -n 1 CHANGELOG.md | grep -q 'release date'; then echo 'Please note the release date in CHANGELOG.md.' && false; fi
 	docker push $(NAME)
 	@echo "*** Don't forget to run 'twgit release/hotfix finish' :)"
-

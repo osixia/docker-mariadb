@@ -13,17 +13,17 @@ The odd string printed by this command is the `CONTAINER_ID`.
 We are going to use this `CONTAINER_ID` to execute some commands inside the container.
 
 First we run a terminal on this container,
-make sure to replace `CONTAINER_ID` by your container id : 
+make sure to replace `CONTAINER_ID` by your container id :
 
 	docker exec -it CONTAINER_ID bash
 
-You should now be in the container terminal, 
+You should now be in the container terminal,
 to properly use this terminal we need to fix the TERM environment variable :
 
 	export TERM=xterm
 
 We can now connect to the MariaDB server using mysql command line tool :
-	
+
 	mysql -u admin -padmin
 
 
@@ -71,7 +71,7 @@ For more information about docker data volume, please refer to :
 
 ### Use an existing MariaDB database
 
-This can be achieved by mounting a host container as data volume. 
+This can be achieved by mounting a host container as data volume.
 Assuming you have a MariaDB database on your docker host in the directory `/data/mariadb/CoolDb`
 simply mount this directory as a volume to `/var/lib/mysql` :
 
@@ -109,4 +109,3 @@ We use **Bats** (Bash Automated Testing System) to test this image:
 Install Bats, and in this project directory run :
 
 	sudo make test
-
