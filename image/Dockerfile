@@ -27,7 +27,8 @@ RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db 
 
 # Install MariaDB , remove default db,
 RUN apt-get -y update \
-    && /container/tool/install-service-available cron ssl-helper-openssl \
+    && /container/tool/install-multiple-process-stack \
+    && /container/tool/install-service-available ssl-helper-openssl \
     && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
        mariadb-server=$MARIADB_VERSION \
     && rm -rf /var/lib/mysql \
