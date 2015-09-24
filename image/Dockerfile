@@ -3,7 +3,7 @@ MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.1
-ENV MARIADB_VERSION 10.1.7+maria-1~trusty
+ENV MARIADB_VERSION 10.1.7+maria-1~jessie
 
 # Use baseimage's init system.
 # https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/run
@@ -15,9 +15,9 @@ RUN groupadd -r mysql && useradd -r -g mysql mysql
 
 # Add MariaDB and Percona repositories
 RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db \
-    && echo 'deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/debian jessie main' > /etc/apt/sources.list.d/mariadb.list \
+    && echo "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/debian jessie main" > /etc/apt/sources.list.d/mariadb.list \
     && apt-key adv --keyserver keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A \
-    && echo 'deb http://repo.percona.com/apt jessie main' > /etc/apt/sources.list.d/percona.list \
+    && echo "deb http://repo.percona.com/apt jessie main" > /etc/apt/sources.list.d/percona.list \
     && { \
 		     echo 'Package: *'; \
 		     echo 'Pin: release o=MariaDB'; \
