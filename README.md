@@ -35,23 +35,23 @@ This is the default behaviour when you run the image.
 It will create an empty database, with a root and a debian-sys-maint user (required by MariaDB to run properly on ubuntu).
 The default root username (admin) and password (admin) can be changed at the docker command line, for example :
 
-	docker run -e ROOT_USER=JaxTeller -e ROOT_PWD=SonsOfAnarchy -d osixia/mariadb
+	docker run -e MARIADB_ROOT_USER=JaxTeller -e MARIADB_ROOT_PASSWORD=SonsOfAnarchy -d osixia/mariadb
 
 For security reasons, by default the root user can only login to MariaDB from local networks.
 This can also be changed at the docker command line.
 
 For example if you want to allow MariaDB root login from docker default network and localhost :
 
-	docker run -e ROOT_ALLOWED_NETWORKS="['172.17.%.%', 'localhost', '127.0.0.1', '::1']" \
+	docker run -e MARIADB_ROOT_ALLOWED_NETWORKS="['172.17.%.%', 'localhost', '127.0.0.1', '::1']" \
 	-d osixia/mariadb
 
 
 #### Full example
 This example will run a docker MariaDB container and execute an sql query from docker host:
 
-	CONTAINER_ID=$(docker run -e ROOT_USER=JaxTeller \
-		-e ROOT_PWD=SonsOfAnarchy \
-		-e ROOT_ALLOWED_NETWORKS="['172.17.%.%', 'localhost', '127.0.0.1', '::1']" \
+	CONTAINER_ID=$(docker run -e MARIADB_ROOT_USER=JaxTeller \
+		-e MARIADB_ROOT_PASSWORD=SonsOfAnarchy \
+		-e MARIADB_ROOT_ALLOWED_NETWORKS="['172.17.%.%', 'localhost', '127.0.0.1', '::1']" \
 		-d osixia/mariadb)
 
 	CONTAINER_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $CONTAINER_ID)
@@ -76,8 +76,8 @@ Assuming you have a MariaDB database on your docker host in the directory `/data
 simply mount this directory as a volume to `/var/lib/mysql` :
 
 	docker run -v /data/mariadb/CoolDb:/var/lib/mysql \
-	-e ROOT_USER=MyCoolDbRootUser \
-	-e ROOT_PWD=MyCoolDbRootPassword \
+	-e MARIADB_ROOT_USER=MyCoolDbRootUser \
+	-e MARIADB_ROOT_PASSWORD=MyCoolDbRootPassword \
 	-d osixia/mariadb
 
 You can also use data volume containers. Please refer to :
@@ -86,11 +86,11 @@ You can also use data volume containers. Please refer to :
 ## Environment Variables
 
 Required for uninitialized and initialized database :
-- **ROOT_USER**: The database root username. Defaults to `admin`
-- **ROOT_PWD**: The database root password. Defaults to `admin`
+- **MARIADB_ROOT_USER**: The database root username. Defaults to `admin`
+- **MARIADB_ROOT_PASSWORD**: The database root password. Defaults to `admin`
 
 Required only for uninitialized database
-- **ROOT_ALLOWED_NETWORKS**: root login will only be allowed from those networks. Defaults to `['localhost', '127.0.0.1', '::1']`
+- **MARIADB_ROOT_ALLOWED_NETWORKS**: root login will only be allowed from those networks. Defaults to `['localhost', '127.0.0.1', '::1']`
 
 ## Manual build
 

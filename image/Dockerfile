@@ -25,7 +25,7 @@ RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db 
 	     } > /etc/apt/preferences.d/mariadb
      # add repository pinning to make sure dependencies from this MariaDB repo are preferred over Debian dependencie
 
-# Install MariaDB , remove default db,
+# Install MariaDB, xtrabackup and remove default db
 RUN apt-get -y update \
     && /container/tool/install-multiple-process-stack \
     && /container/tool/install-service-available ssl-helper-openssl \
@@ -44,7 +44,7 @@ RUN /container/tool/install-service \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add default env variables
-ADD env.yml /etc/env.yml
+ADD env.yaml /etc/env.yaml
 
 # Set MariaDB database directory in a data volume
 VOLUME ["/var/lib/mysql"]

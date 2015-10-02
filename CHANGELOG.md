@@ -1,5 +1,5 @@
 ## 0.2.4 (release date: 2015-03-04)
-  - Allow single ROOT_ALLOWED_NETWORKS simply by -e ROOT_ALLOWED_NETWORKS=host instead of -e ROOT_ALLOWED_NETWORKS=['host']
+  - Allow single MARIADB_ROOT_ALLOWED_NETWORKS simply by -e MARIADB_ROOT_ALLOWED_NETWORKS=host instead of -e MARIADB_ROOT_ALLOWED_NETWORKS=['host']
 
 ## 0.2.3 (release date: 2015-03-02)
   - Custom my.cnf
