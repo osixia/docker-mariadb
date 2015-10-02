@@ -30,7 +30,7 @@ RUN apt-get -y update \
     && /container/tool/install-multiple-process-stack \
     && /container/tool/install-service-available ssl-helper-openssl \
     && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-       mariadb-server=$MARIADB_VERSION \
+       mariadb-server=$MARIADB_VERSION percona-xtrabackup \
     && rm -rf /var/lib/mysql \
     && mkdir /var/lib/mysql
 
