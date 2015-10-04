@@ -75,8 +75,12 @@ EOSQL
 
     echo "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;" >> "$TEMP_FILE"
 
+    # add backup user
+    echo "CREATE USER '$MARIADB_BACKUP_USER'@'localhost' IDENTIFIED BY '$MARIADB_BACKUP_PASSWORD';" >> "$TEMP_FILE"
+    echo "GRANT RELOAD, LOCK TABLES, REPLICATION CLIENT ON *.* TO '$MARIADB_BACKUP_USER'@'localhost';" >> "$TEMP_FILE"
+
     # flush privileges
-    echo 'FLUSH PRIVILEGES ;' >> "$TEMP_FILE"
+    echo "FLUSH PRIVILEGES ;" >> "$TEMP_FILE"
 
     # execute config queries
     mysql -u root < $TEMP_FILE

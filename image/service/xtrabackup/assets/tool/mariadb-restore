@@ -1,0 +1,24 @@
+#!/bin/bash -e
+
+# Usage: /sbin/mariadb-restore dir
+
+# Example : /sbin/mariadb-restore 2015-10-04-17:28:56
+#           will restore data in /data/backup/2015-10-04-17:28:56
+
+# stop mariadb
+sv stop mariadb
+
+# backup mariadb database
+[ -d /tmp/mysql/ ] && rm -rf /tmp/mysql/
+
+mkdir /tmp/mysql/
+mv /var/lib/mysql/* /tmp/mysql/
+
+# restore backup
+innobackupex --copy-back /data/backup/$1
+
+# fix file permissions
+chown -R mysql:mysql /var/lib/mysql
+
+# restart mariadb
+sv start mariadb

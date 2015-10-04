@@ -46,8 +46,8 @@ RUN /container/tool/install-service \
 # Add default env variables
 ADD env.yaml /etc/env.yaml
 
-# Set MariaDB database directory in a data volume
-VOLUME ["/var/lib/mysql"]
+# Set MariaDB database and backup directories in data volumes
+VOLUME ["/var/lib/mysql", "/data/backup"]
 
 # Expose MariaDB default port
 EXPOSE 3306
