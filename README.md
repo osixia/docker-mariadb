@@ -92,6 +92,26 @@ Required for uninitialized and initialized database :
 Required only for uninitialized database
 - **MARIADB_ROOT_ALLOWED_NETWORKS**: root login will only be allowed from those networks. Defaults to `['localhost', '127.0.0.1', '::1']`
 
+Backup :
+
+- **MARIADB_BACKUP_USER**: The database backup user username. Defaults to `backup`
+- **MARIADB_BACKUP_PASSWORD**: The database backup user password. Defaults to `backup`
+
+- **MARIADB_BACKUP_CRON_EXP**: Cron expression to schedule data backup. Defaults to `"0 4 * * *"`. Every days at 4am.
+
+- **MARIADB_BACKUP_TTL**: Backup TTL in days. Defaults to `15`.
+
+SSL :
+
+- **MARIADB_SSL**: Enable ssl. Defaults to `true`
+- **MARIADB_SSL_CIPHER_SUITE**: TLS cipher suite. Defaults to `TLSv1.2`
+- **MARIADB_SSL_CRT_FILENAME**: MariaDB ssl certificate filename. Defaults to `mariadb.crt`
+- **MARIADB_SSL_KEY_FILENAME**: MariaDB ssl certificate private key filename. Defaults to `mariadb.key`
+- **MARIADB_SSL_CA_CRT_FILENAME**: MariaDB ssl CA certificate filename. Defaults to `ca.crt`
+
+	More information at : https://mariadb.com/kb/en/mariadb/ssl-system-variables/
+
+
 ## Manual build
 
 Clone this project, and run `make build` :
