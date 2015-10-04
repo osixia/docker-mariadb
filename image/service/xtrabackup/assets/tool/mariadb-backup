@@ -6,6 +6,9 @@ source /etc/container_environment.sh
 
 backupPath="/data/backup"
 
+# delete backups that are over $MARIADB_BACKUP_TTL days
+find $backupPath -type f -mtime +$MARIADB_BACKUP_TTL -exec rm {} \;
+
 dateFileFormat="+%F-%T"
 newBackupPath="$backupPath/$(date "$dateFileFormat")"
 
