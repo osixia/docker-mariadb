@@ -32,7 +32,7 @@ We can now connect to the MariaDB server using mysql command line tool :
 ### Create new database
 This is the default behaviour when you run the image.
 
-It will create an empty database, with a root and a debian-sys-maint user (required by MariaDB to run properly on ubuntu).
+It will create an empty database, with a root and a debian-sys-maint user (required by MariaDB to run properly on debian).
 The default root username (admin) and password (admin) can be changed at the docker command line, for example :
 
 	docker run -e MARIADB_ROOT_USER=JaxTeller -e MARIADB_ROOT_PASSWORD=SonsOfAnarchy -d osixia/mariadb
@@ -63,15 +63,13 @@ This example will run a docker MariaDB container and execute an sql query from d
 
 The directory `/var/lib/mysql` (witch contains all MariaDB database files) has been declared as a volume, so your database files are saved outside the container in a data volume.
 
-This mean that you can stop, and restart the container and get back your database without losing any data. But if you remove the container, the data volume will me removed too, except if you have linked this data volume to an other container.
-
 For more information about docker data volume, please refer to :
 
 > [https://docs.docker.com/userguide/dockervolumes/](https://docs.docker.com/userguide/dockervolumes/)
 
 ### Use an existing MariaDB database
 
-This can be achieved by mounting a host directory as volume. 
+This can be achieved by mounting a host directory as volume.
 Assuming you have a MariaDB database on your docker host in the directory `/data/mariadb/CoolDb`
 simply mount this directory as a volume to `/var/lib/mysql` :
 
@@ -93,7 +91,7 @@ Or you can set your custom config at run time, by mouting your **my.cnf** file t
 
 ## Environment Variables
 
-Environement variables defaults are set in **image/env.yml**. You can modify environment variable values directly in this file and rebuild the image ([see manual build](#manual-build)) or you can override those values at run time with -e argument but they must be converted as python string. See example below.
+Environement variables defaults are set in **image/env.yaml**. You can modify environment variable values directly in this file and rebuild the image ([see manual build](#manual-build)). You can also override those values at run time with -e argument or by setting your own env.yaml file as a docker volume to `/container/environment/env.yaml`. See examples below.
 
 Required for uninitialized and initialized database :
 - **MARIADB_ROOT_USER**: The database root username. Defaults to `admin`
@@ -124,11 +122,11 @@ SSL :
 ### Set environment variables at run time :
 
 String environment variable can be set directly by adding the -e argument in the command line, for example :
-	
+
 	docker run -e ROOT_USER="JaxTeller" -e ROOT_PWD="Sons Of Anarchy" -d osixia/mariadb
 
 For more complex environment variables like ROOT_ALLOWED_NETWORKS there value must be set in python.
-As you can see in **image/env.yml** the variable ROOT_ALLOWED_NETWORKS is a list of network adresses :
+As you can see in **image/env.yaml** the variable ROOT_ALLOWED_NETWORKS is a list of network adresses :
 
 	  - localhost
 	  - 127.0.0.1
@@ -142,6 +140,12 @@ Then we run the image by adding the the -e argument with the python string :
 
 	docker run -e ROOT_ALLOWED_NETWORKS="['localhost', '127.0.0.1', '::1']" -d osixia/mariadb
 
+You can also set your own `env.yaml` file as a docker volume to `/container/environment/env.yaml`
+
+		docker run -v /data/my-env.yaml:/container/environment/env.yaml \
+		-d osixia/mariadb
+
+
 ## Manual build
 
 Clone this project :
@@ -153,15 +157,15 @@ Adapt Makefile, set your image NAME and VERSION, for example :
 
 	NAME = osixia/mariadb
 	VERSION = 0.2.5
-	
+
 	becomes :
 	NAME = billy-the-king/mariadb
 	VERSION = 0.1.0
 
 Build your image :
-	
+
 	make build
-	
+
 Run your image :
 
 	docker run -d billy-the-king/mariadb:0.1.0
@@ -175,4 +179,3 @@ We use **Bats** (Bash Automated Testing System) to test this image:
 Install Bats, and in this project directory run :
 
 	make test
-
