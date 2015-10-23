@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+# Usage: /sbin/mariadb-backup
+
+source /etc/container_environment.sh
+
+backupPath="/data/backup"
+
+# delete backups that are over $MARIADB_BACKUP_TTL days
+find $backupPath -type f -mtime +$MARIADB_BACKUP_TTL -exec rm {} \;
+
+dateFileFormat="+%F-%T"
+newBackupPath="$backupPath/$(date "$dateFileFormat")"
+
+innobackupex --user=$MARIADB_BACKUP_USER  --password=$MARIADB_BACKUP_PASSWORD --no-timestamp $newBackupPath
+
+innobackupex --apply-log $newBackupPath

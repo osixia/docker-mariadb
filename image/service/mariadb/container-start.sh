@@ -2,12 +2,41 @@
 
 FIRST_START_DONE="/etc/docker-mariadb-first-start-done"
 
+# fix permissions and ownership of /var/lib/mysql
+chown -R mysql:mysql /var/lib/mysql
+chmod 700 /var/lib/mysql
+chown -R mysql:mysql /container/service/mariadb
+
 # container first start
 if [ ! -e "$FIRST_START_DONE" ]; then
 
-  # fix permissions and ownership of /var/lib/mysql
-  chown -R mysql:mysql /var/lib/mysql
-  chmod 700 /var/lib/mysql
+  # ssl
+  if [ "${MARIADB_SSL,,}" == "true" ]; then
+
+    # check certificat and key or create it
+    /sbin/ssl-helper "/container/service/mariadb/assets/certs/$MARIADB_SSL_CRT_FILENAME" "/container/service/mariadb/assets/certs/$MARIADB_SSL_KEY_FILENAME" --ca-crt=/container/service/mariadb/assets/certs/$MARIADB_SSL_CA_CRT_FILENAME
+    chown -R mysql:mysql /container/service/mariadb
+
+  fi
+
+
+  # We have a custom config file
+  if [ -e /container/service/mariadb/assets/my.cnf ]; then
+
+    echo "use config file: /container/service/mariadb/assets/my.cnf"
+    rm /etc/mysql/my.cnf
+    ln -s /container/service/mariadb/assets/my.cnf /etc/mysql/my.cnf
+
+  else
+    # Modify the default config file
+    echo "use mariadb default config"
+
+    # Allow remote connection
+    sed -Ei 's/^(bind-address|log)/#&/' /etc/mysql/my.cnf
+
+    # Disable local files loading, don't reverse lookup hostnames, they are usually another container
+    sed -i '/\[mysqld\]/a\local-infile=0\nskip-host-cache\nskip-name-resolve' /etc/mysql/my.cnf
+  fi
 
   # config sql queries
   TEMP_FILE='/tmp/mysql-start.sql'
@@ -34,20 +63,24 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 EOSQL
 
     # add root user on specified networks
-    ROOT_ALLOWED_NETWORKS=($ROOT_ALLOWED_NETWORKS)
-    for network in "${ROOT_ALLOWED_NETWORKS[@]}"
+    MARIADB_ROOT_ALLOWED_NETWORKS=($MARIADB_ROOT_ALLOWED_NETWORKS)
+    for network in "${MARIADB_ROOT_ALLOWED_NETWORKS[@]}"
     do
       if [ -n "${!network}" ]; then
-        echo "GRANT ALL PRIVILEGES ON *.* TO '$ROOT_USER'@'${!network}' IDENTIFIED BY '$ROOT_PWD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
+        echo "GRANT ALL PRIVILEGES ON *.* TO '$MARIADB_ROOT_USER'@'${!network}' IDENTIFIED BY '$MARIADB_ROOT_PASSWORD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
       else
-        echo "GRANT ALL PRIVILEGES ON *.* TO '$ROOT_USER'@'${network}' IDENTIFIED BY '$ROOT_PWD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
+        echo "GRANT ALL PRIVILEGES ON *.* TO '$MARIADB_ROOT_USER'@'${network}' IDENTIFIED BY '$MARIADB_ROOT_PASSWORD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
       fi
     done
 
     echo "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;" >> "$TEMP_FILE"
-    
+
+    # add backup user
+    echo "CREATE USER '$MARIADB_BACKUP_USER'@'localhost' IDENTIFIED BY '$MARIADB_BACKUP_PASSWORD';" >> "$TEMP_FILE"
+    echo "GRANT RELOAD, LOCK TABLES, REPLICATION CLIENT ON *.* TO '$MARIADB_BACKUP_USER'@'localhost';" >> "$TEMP_FILE"
+
     # flush privileges
-    echo 'FLUSH PRIVILEGES ;' >> "$TEMP_FILE"
+    echo "FLUSH PRIVILEGES ;" >> "$TEMP_FILE"
 
     # execute config queries
     mysql -u root < $TEMP_FILE
@@ -73,7 +106,7 @@ EOSQL
 EOSQL
 
     # execute config queries
-    mysql -u $ROOT_USER -p$ROOT_PWD < $TEMP_FILE
+    mysql -u $MARIADB_ROOT_USER -p$MARIADB_ROOT_PASSWORD < $TEMP_FILE
 
     # prevent socket error on stop
     sleep 1
