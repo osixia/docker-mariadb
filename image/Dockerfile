@@ -3,7 +3,7 @@ MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.1
-ENV MARIADB_VERSION 10.1.7+maria-1~jessie
+ENV MARIADB_VERSION 10.1.8+maria-1~jessie
 
 # Use baseimage's init system.
 # https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/run
@@ -44,7 +44,7 @@ RUN /container/tool/install-service \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add default env variables
-ADD env.yaml /etc/env.yaml
+ADD env.yaml /container/environment/env.yaml
 
 # Set MariaDB database and backup directories in data volumes
 VOLUME ["/var/lib/mysql", "/data/backup"]

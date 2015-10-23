@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.2.5
+  - MariaDB version 10.1.8
   - Use light-baseimage:0.1.2
   - Add ssl support
   - Add xtrabackup
