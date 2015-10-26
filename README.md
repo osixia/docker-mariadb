@@ -1,5 +1,8 @@
 # osixia/mariadb
 
+[![](https://badge.imagelayers.io/osixia/mariadb:latest.svg)](https://imagelayers.io/?images=osixia/mariadb:latest 'Get your own badge on imagelayers.io')
+
+
 A docker image to run a MariaDB server.
 > [wikipedia.org/wiki/MariaDB](https://en.wikipedia.org/wiki/MariaDB)
 
