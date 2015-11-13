@@ -118,6 +118,8 @@ EOSQL
 
   rm $TEMP_FILE
 
+  ln -s /container/service/mariadb/assets/conf.d/* /etc/mysql/conf.d/
+
   touch $FIRST_START_DONE
 fi
 
