@@ -2,7 +2,7 @@
 
 ## 0.2.6
   - Update to light-baseimage:0.1.4
-  - Add more easily config files
+  - More easy configuration
 
 ## 0.2.5
   - MariaDB version 10.1.8
