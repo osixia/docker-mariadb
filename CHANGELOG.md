@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.8
+  - Update to light-baseimage:0.2.0
+
 ## 0.2.7
   - Update to light-baseimage:0.1.5
 
