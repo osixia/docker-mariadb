@@ -56,10 +56,6 @@ if [ ! -e "$FIRST_START_DONE" ]; then
     # start MariaDB
     service mysql start || true
 
-    # drop all user and test database
-    cat > "$TEMP_FILE" <<-EOSQL
-        DELETE FROM mysql.user ;
-        DROP DATABASE IF EXISTS test ;
 EOSQL
 
     # add root user on specified networks
