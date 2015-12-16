@@ -1,9 +1,9 @@
-FROM osixia/light-baseimage:0.1.5
+FROM osixia/light-baseimage:0.2.0
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.1
-ENV MARIADB_VERSION 10.1.8+maria-1~jessie
+ENV MARIADB_VERSION 10.1.9+maria-1~jessie
 
 # Use baseimage's init system.
 # https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/run
