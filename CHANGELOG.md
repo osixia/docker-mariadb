@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.9
+  - Update to light-baseimage:0.2.1
+  - MariaDB 10.1.10
+
 ## 0.2.8
   - Update to light-baseimage:0.2.0
   - Makefile with build no cache

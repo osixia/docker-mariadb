@@ -1,11 +1,17 @@
 #!/bin/bash -e
+set -o pipefail
 
-FIRST_START_DONE="/etc/docker-mariadb-first-start-done"
+# set -x (bash debug) if log level is trace
+# https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/log-helper
+log-helper level eq trace && set -x
+
+
+FIRST_START_DONE="${CONTAINER_STATE_DIR}/docker-mariadb-first-start-done"
 
 # fix permissions and ownership of /var/lib/mysql
 chown -R mysql:mysql /var/lib/mysql
 chmod 700 /var/lib/mysql
-chown -R mysql:mysql /container/service/mariadb
+chown -R mysql:mysql ${CONTAINER_SERVICE_DIR}/mariadb
 
 # container first start
 if [ ! -e "$FIRST_START_DONE" ]; then
@@ -14,22 +20,21 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   if [ "${MARIADB_SSL,,}" == "true" ]; then
 
     # check certificat and key or create it
-    /sbin/ssl-helper "/container/service/mariadb/assets/certs/$MARIADB_SSL_CRT_FILENAME" "/container/service/mariadb/assets/certs/$MARIADB_SSL_KEY_FILENAME" --ca-crt=/container/service/mariadb/assets/certs/$MARIADB_SSL_CA_CRT_FILENAME
-    chown -R mysql:mysql /container/service/mariadb
+    cfssl-helper "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CRT_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_KEY_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CA_CRT_FILENAME"
+    chown -R mysql:mysql ${CONTAINER_SERVICE_DIR}/mariadb
 
   fi
 
-
   # We have a custom config file
-  if [ -e /container/service/mariadb/assets/my.cnf ]; then
+  if [ -e ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf ]; then
 
-    echo "use config file: /container/service/mariadb/assets/my.cnf"
+    log-helper info "Use config file: ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf ..."
     rm /etc/mysql/my.cnf
-    ln -s /container/service/mariadb/assets/my.cnf /etc/mysql/my.cnf
+    ln -sf ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf /etc/mysql/my.cnf
 
   else
     # Modify the default config file
-    echo "use mariadb default config"
+    log-helper info "Use mariadb default config..."
 
     # Allow remote connection
     sed -Ei --follow-symlinks 's/^(bind-address|log)/#&/' /etc/mysql/my.cnf
@@ -51,10 +56,10 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   if [ -z "$(ls -A /var/lib/mysql)" ]; then
 
     # initializes the MySQL data directory and creates the system tables that it contains
-    mysql_install_db --datadir=/var/lib/mysql
+    mysql_install_db --datadir=/var/lib/mysql | log-heper debug
 
     # start MariaDB
-    service mysql start || true
+    service mysql start | log-heper debug || true
 
     # drop all user and test database
     cat > "$TEMP_FILE" <<-EOSQL
@@ -83,19 +88,19 @@ EOSQL
     echo "FLUSH PRIVILEGES ;" >> "$TEMP_FILE"
 
     # execute config queries
-    mysql -u root < $TEMP_FILE
+    mysql -u root < $TEMP_FILE | log-heper debug
 
     # prevent socket error on stop
     sleep 1
 
     # Stop MariaDB
-    service mysql stop
+    service mysql stop | log-heper debug
 
   # database is initialized
   else
 
     # start MariaDB
-    service mysql start || true
+    service mysql start | log-heper debug || true
 
     # drop all user and test database
     cat > "$TEMP_FILE" <<-EOSQL
@@ -106,19 +111,19 @@ EOSQL
 EOSQL
 
     # execute config queries
-    mysql -u $MARIADB_ROOT_USER -p$MARIADB_ROOT_PASSWORD < $TEMP_FILE
+    mysql -u $MARIADB_ROOT_USER -p$MARIADB_ROOT_PASSWORD < $TEMP_FILE | log-heper debug
 
     # prevent socket error on stop
     sleep 1
 
     # stop MariaDB
-    service mysql stop
+    service mysql stop | log-heper debug
 
   fi
 
   rm $TEMP_FILE
 
-  ln -s /container/service/mariadb/assets/conf.d/* /etc/mysql/conf.d/
+  ln -s ${CONTAINER_SERVICE_DIR}/mariadb/assets/conf.d/* /etc/mysql/conf.d/
 
   touch $FIRST_START_DONE
 fi
