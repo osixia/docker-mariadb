@@ -46,8 +46,6 @@ load test_helper
   sleep 5
   run docker exec $CONTAINER_ID mysql -u admin -padmin --skip-column-names -e "select distinct user from mysql.user where user='existing-hello';"
   clear_container
-  UNAME=$(sed -e 's#.*/\(\)#\1#' <<< "$HOME") || true
-  chown -R $UNAME:$UNAME $BATS_TEST_DIRNAME/database || true
 
   [ "$status" -eq 0 ]
   [ "$output" = "existing-hello" ]
