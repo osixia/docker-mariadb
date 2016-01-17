@@ -1,24 +1,20 @@
 # osixia/mariadb
 
-[![](https://badge.imagelayers.io/osixia/mariadb:latest.svg)](https://imagelayers.io/?images=osixia/mariadb:latest 'Get your own badge on imagelayers.io')
-
+[![](https://badge.imagelayers.io/osixia/mariadb:latest.svg)](https://imagelayers.io/?images=osixia/mariadb:latest 'Get your own badge on imagelayers.io') | Latest release: 0.2.9 - MariaDB 10.1.10 -  [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/mariadb/) 
 
 A docker image to run a MariaDB server.
 > [wikipedia.org/wiki/MariaDB](https://en.wikipedia.org/wiki/MariaDB)
 
 ## Quick start
-Run MariaDB docker image :
+Run MariaDB docker image:
 
-	docker run -d osixia/mariadb
+	docker run --name my-mariadb-container --detach osixia/mariadb:0.2.9
 
 This start a new container with a MariaDB server running inside.
-The odd string printed by this command is the `CONTAINER_ID`.
-We are going to use this `CONTAINER_ID` to execute some commands inside the container.
 
-First we run a terminal on this container,
-make sure to replace `CONTAINER_ID` by your container id :
+First we run a terminal on this container:
 
-	docker exec -it CONTAINER_ID bash
+	docker exec -it my-mariadb-container bash
 
 You should now be in the container terminal,
 to properly use this terminal we need to fix the TERM environment variable :
