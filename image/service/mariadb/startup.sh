@@ -1,10 +1,8 @@
 #!/bin/bash -e
-set -o pipefail
 
 # set -x (bash debug) if log level is trace
 # https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/log-helper
 log-helper level eq trace && set -x
-
 
 FIRST_START_DONE="${CONTAINER_STATE_DIR}/docker-mariadb-first-start-done"
 
@@ -20,7 +18,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   if [ "${MARIADB_SSL,,}" == "true" ]; then
 
     # check certificat and key or create it
-    cfssl-helper "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CRT_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_KEY_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CA_CRT_FILENAME"
+    cfssl-helper db "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CRT_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_KEY_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CA_CRT_FILENAME"
     chown -R mysql:mysql ${CONTAINER_SERVICE_DIR}/mariadb
 
   fi
@@ -56,10 +54,10 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   if [ -z "$(ls -A /var/lib/mysql)" ]; then
 
     # initializes the MySQL data directory and creates the system tables that it contains
-    mysql_install_db --datadir=/var/lib/mysql | log-heper debug
+    mysql_install_db --datadir=/var/lib/mysql
 
     # start MariaDB
-    service mysql start | log-heper debug || true
+    service mysql start || true
 
     # drop all user and test database
     cat > "$TEMP_FILE" <<-EOSQL
@@ -88,19 +86,19 @@ EOSQL
     echo "FLUSH PRIVILEGES ;" >> "$TEMP_FILE"
 
     # execute config queries
-    mysql -u root < $TEMP_FILE | log-heper debug
+    mysql -u root < $TEMP_FILE
 
     # prevent socket error on stop
     sleep 1
 
     # Stop MariaDB
-    service mysql stop | log-heper debug
+    service mysql stop
 
   # database is initialized
   else
 
     # start MariaDB
-    service mysql start | log-heper debug || true
+    service mysql start || true
 
     # drop all user and test database
     cat > "$TEMP_FILE" <<-EOSQL
@@ -111,13 +109,13 @@ EOSQL
 EOSQL
 
     # execute config queries
-    mysql -u $MARIADB_ROOT_USER -p$MARIADB_ROOT_PASSWORD < $TEMP_FILE | log-heper debug
+    mysql -u $MARIADB_ROOT_USER -p$MARIADB_ROOT_PASSWORD < $TEMP_FILE
 
     # prevent socket error on stop
     sleep 1
 
     # stop MariaDB
-    service mysql stop | log-heper debug
+    service mysql stop
 
   fi
 
