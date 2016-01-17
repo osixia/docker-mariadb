@@ -12,6 +12,7 @@ load test_helper
 
   run_image
   wait_service mysqld
+  sleep 5
   run docker exec $CONTAINER_ID mysql -u admin -padmin --skip-column-names -e "select distinct user from mysql.user where user='admin';"
   clear_container
 
@@ -24,10 +25,12 @@ load test_helper
 
   run_image
   wait_service mysqld
+  sleep 5
   docker exec $CONTAINER_ID mysql -u admin -padmin --skip-column-names -e "CREATE USER 'hello'@'%' IDENTIFIED BY 'password' ;"
   stop_container
   start_container
   wait_service mysqld
+  sleep 5
   run docker exec $CONTAINER_ID mysql -u admin -padmin --skip-column-names -e "select distinct user from mysql.user where user='hello';"
   clear_container
 
@@ -40,6 +43,7 @@ load test_helper
 
   run_image -v $BATS_TEST_DIRNAME/database:/var/lib/mysql
   wait_service mysqld
+  sleep 5
   run docker exec $CONTAINER_ID mysql -u admin -padmin --skip-column-names -e "select distinct user from mysql.user where user='existing-hello';"
   clear_container
   UNAME=$(sed -e 's#.*/\(\)#\1#' <<< "$HOME") || true
