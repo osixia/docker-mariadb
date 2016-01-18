@@ -11,6 +11,15 @@ chown -R mysql:mysql /var/lib/mysql
 chmod 700 /var/lib/mysql
 chown -R mysql:mysql ${CONTAINER_SERVICE_DIR}/mariadb
 
+# config sql queries
+TEMP_FILE='/tmp/mysql-start.sql'
+
+# The password for 'debian-sys-maint'@'localhost' is auto generated.
+# The database inside of DATA_DIR may not have been generated with this password.
+# So, we need to set this for our database to be portable.
+# https://github.com/Painted-Fox/docker-mariadb/blob/master/scripts/first_run.sh
+DB_MAINT_PASS=$(cat /etc/mysql/debian.cnf | grep -m 1 "password\s*=\s*"| sed 's/^password\s*=\s*//')
+
 # container first start
 if [ ! -e "$FIRST_START_DONE" ]; then
 
@@ -28,7 +37,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 
     log-helper info "Use config file: ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf ..."
     rm /etc/mysql/my.cnf
-    ln -sf ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf /etc/mysql/my.cnf
+    cp ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf /etc/mysql/my.cnf
 
   else
     # Modify the default config file
@@ -40,15 +49,6 @@ if [ ! -e "$FIRST_START_DONE" ]; then
     # Disable local files loading, don't reverse lookup hostnames, they are usually another container
     sed -i --follow-symlinks '/\[mysqld\]/a\local-infile=0\nskip-host-cache\nskip-name-resolve' /etc/mysql/my.cnf
   fi
-
-  # config sql queries
-  TEMP_FILE='/tmp/mysql-start.sql'
-
-  # The password for 'debian-sys-maint'@'localhost' is auto generated.
-  # The database inside of DATA_DIR may not have been generated with this password.
-  # So, we need to set this for our database to be portable.
-  # https://github.com/Painted-Fox/docker-mariadb/blob/master/scripts/first_run.sh
-  DB_MAINT_PASS=$(cat /etc/mysql/debian.cnf | grep -m 1 "password\s*=\s*"| sed 's/^password\s*=\s*//')
 
   # database is uninitialized
   if [ -z "$(ls -A /var/lib/mysql)" ]; then
@@ -66,14 +66,9 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 EOSQL
 
     # add root user on specified networks
-    MARIADB_ROOT_ALLOWED_NETWORKS=($MARIADB_ROOT_ALLOWED_NETWORKS)
-    for network in "${MARIADB_ROOT_ALLOWED_NETWORKS[@]}"
+    for network in $(complex-bash-env iterate "${MARIADB_ROOT_ALLOWED_NETWORKS}")
     do
-      if [ -n "${!network}" ]; then
-        echo "GRANT ALL PRIVILEGES ON *.* TO '$MARIADB_ROOT_USER'@'${!network}' IDENTIFIED BY '$MARIADB_ROOT_PASSWORD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
-      else
-        echo "GRANT ALL PRIVILEGES ON *.* TO '$MARIADB_ROOT_USER'@'${network}' IDENTIFIED BY '$MARIADB_ROOT_PASSWORD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
-      fi
+      echo "GRANT ALL PRIVILEGES ON *.* TO '$MARIADB_ROOT_USER'@'${network}' IDENTIFIED BY '$MARIADB_ROOT_PASSWORD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
     done
 
     echo "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;" >> "$TEMP_FILE"
@@ -93,37 +88,36 @@ EOSQL
 
     # Stop MariaDB
     service mysql stop
-
-  # database is initialized
-  else
-
-    # start MariaDB
-    service mysql start || true
-
-    # drop all user and test database
-    cat > "$TEMP_FILE" <<-EOSQL
-        DELETE FROM mysql.user where user = 'debian-sys-maint' ;
-        FLUSH PRIVILEGES ;
-        GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;
-        FLUSH PRIVILEGES ;
-EOSQL
-
-    # execute config queries
-    mysql -u $MARIADB_ROOT_USER -p$MARIADB_ROOT_PASSWORD < $TEMP_FILE
-
-    # prevent socket error on stop
-    sleep 1
-
-    # stop MariaDB
-    service mysql stop
-
   fi
 
   rm $TEMP_FILE
-
-  ln -s ${CONTAINER_SERVICE_DIR}/mariadb/assets/conf.d/* /etc/mysql/conf.d/
+  cp /etc/mysql/my.cnf ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf
 
   touch $FIRST_START_DONE
 fi
+
+
+# start MariaDB
+service mysql start || true
+
+# drop all user and test database
+cat > "$TEMP_FILE" <<-EOSQL
+    DELETE FROM mysql.user where user = 'debian-sys-maint' ;
+    FLUSH PRIVILEGES ;
+    GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;
+    FLUSH PRIVILEGES ;
+EOSQL
+
+# execute config queries
+mysql -u $MARIADB_ROOT_USER -p$MARIADB_ROOT_PASSWORD < $TEMP_FILE
+
+# prevent socket error on stop
+sleep 1
+
+# stop MariaDB
+service mysql stop
+
+ln -sf ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf /etc/mysql/my.cnf
+ln -sf ${CONTAINER_SERVICE_DIR}/mariadb/assets/conf.d/* /etc/mysql/conf.d/
 
 exit 0
