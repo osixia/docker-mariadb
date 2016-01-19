@@ -4,8 +4,6 @@
 # https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/log-helper
 log-helper level eq trace && set -x
 
-FIRST_START_DONE="${CONTAINER_STATE_DIR}/docker-mariadb-first-start-done"
-
 # fix permissions and ownership of /var/lib/mysql
 chown -R mysql:mysql /var/lib/mysql
 chmod 700 /var/lib/mysql
@@ -20,11 +18,16 @@ TEMP_FILE='/tmp/mysql-start.sql'
 # https://github.com/Painted-Fox/docker-mariadb/blob/master/scripts/first_run.sh
 DB_MAINT_PASS=$(cat /etc/mysql/debian.cnf | grep -m 1 "password\s*=\s*"| sed 's/^password\s*=\s*//')
 
+FIRST_START_DONE="${CONTAINER_STATE_DIR}/docker-mariadb-first-start-done"
 # container first start
 if [ ! -e "$FIRST_START_DONE" ]; then
 
-  # ssl
+  #
+  # SSL config
+  #
   if [ "${MARIADB_SSL,,}" == "true" ]; then
+
+    log-helper info "SSL config..."
 
     # check certificat and key or create it
     cfssl-helper db "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CRT_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_KEY_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CA_CRT_FILENAME"
@@ -32,31 +35,39 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 
   fi
 
+  #
   # We have a custom config file
+  #
   if [ -e ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf ]; then
 
     log-helper info "Use config file: ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf ..."
     rm /etc/mysql/my.cnf
     cp ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf /etc/mysql/my.cnf
 
+  #
+  # Use mariadb default config file
+  #
   else
-    # Modify the default config file
-    log-helper info "Use mariadb default config..."
+    log-helper info "Use default config file: /etc/mysql/my.cnf ..."
 
     # Allow remote connection
     sed -Ei --follow-symlinks 's/^(bind-address|log)/#&/' /etc/mysql/my.cnf
-
     # Disable local files loading, don't reverse lookup hostnames, they are usually another container
     sed -i --follow-symlinks '/\[mysqld\]/a\local-infile=0\nskip-host-cache\nskip-name-resolve' /etc/mysql/my.cnf
   fi
 
-  # database is uninitialized
+  #
+  # there is no database
+  #
   if [ -z "$(ls -A /var/lib/mysql)" ]; then
 
+    log-helper info "Init new database..."
+
     # initializes the MySQL data directory and creates the system tables that it contains
-    mysql_install_db --datadir=/var/lib/mysql
+    mysql_install_db --user=mysql --datadir=/var/lib/mysql --rpm
 
     # start MariaDB
+    log-helper info "Start MariaDB..."
     service mysql start || true
 
     # drop all user and test database
@@ -71,6 +82,7 @@ EOSQL
       echo "GRANT ALL PRIVILEGES ON *.* TO '$MARIADB_ROOT_USER'@'${network}' IDENTIFIED BY '$MARIADB_ROOT_PASSWORD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
     done
 
+    # add debian user for maintenance operations
     echo "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;" >> "$TEMP_FILE"
 
     # add backup user
@@ -82,12 +94,6 @@ EOSQL
 
     # execute config queries
     mysql -u root < $TEMP_FILE
-
-    # prevent socket error on stop
-    sleep 1
-
-    # Stop MariaDB
-    service mysql stop
   fi
 
   rm $TEMP_FILE
@@ -96,26 +102,26 @@ EOSQL
   touch $FIRST_START_DONE
 fi
 
+# if mariadb is not already started
+if [ ! -e "/var/run/mysqld/mysqld.pid" ]; then
+  log-helper info "Start mariadb..."
+  service mysql start || true
 
-# start MariaDB
-service mysql start || true
-
-# drop all user and test database
+  # add debian user for maintenance operations
 cat > "$TEMP_FILE" <<-EOSQL
     DELETE FROM mysql.user where user = 'debian-sys-maint' ;
     FLUSH PRIVILEGES ;
     GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;
     FLUSH PRIVILEGES ;
 EOSQL
+  mysql -u $MARIADB_ROOT_USER -p$MARIADB_ROOT_PASSWORD < $TEMP_FILE
 
-# execute config queries
-mysql -u $MARIADB_ROOT_USER -p$MARIADB_ROOT_PASSWORD < $TEMP_FILE
+fi
 
-# prevent socket error on stop
-sleep 1
-
-# stop MariaDB
-service mysql stop
+log-helper info "Stop MariaDB..."
+MARIADB_PID=$(cat /var/run/mysqld/mysqld.pid)
+kill -15 $MARIADB_PID
+while [ -e /proc/$MARIADB_PID ]; do sleep 0.1; done # wait until slapd is terminated
 
 ln -sf ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf /etc/mysql/my.cnf
 ln -sf ${CONTAINER_SERVICE_DIR}/mariadb/assets/conf.d/* /etc/mysql/conf.d/
