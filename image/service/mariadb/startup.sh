@@ -26,13 +26,12 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   # SSL config
   #
   if [ "${MARIADB_SSL,,}" == "true" ]; then
-
     log-helper info "SSL config..."
 
-    # check certificat and key or create it
-    cfssl-helper db "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CRT_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_KEY_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CA_CRT_FILENAME"
+    # generate a certificate and key with cfssl tool if LDAP_CRT and LDAP_KEY files don't exists
+    # https://github.com/osixia/docker-light-baseimage/blob/stable/image/service-available/:cfssl/assets/tool/cfssl-helper
+    cfssl-helper ${MARIADB_CFSSL_PREFIX} "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CRT_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_KEY_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CA_CRT_FILENAME"
     chown -R mysql:mysql ${CONTAINER_SERVICE_DIR}/mariadb
-
   fi
 
   #

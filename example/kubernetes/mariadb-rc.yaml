@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mariadb-controller
+  labels:
+    app: mariadb
+spec:
+  replicas: 1
+  selector:
+    app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: osixia/mariadb:0.2.8
+          volumeMounts:
+            - name: mariadb-storage
+              mountPath: /var/lib/mysql
+            - name: mariadb-backup
+              mountPath: /data/backup
+            - name: mariadb-certs
+              mountPath: /container/service/mariadb/assets/certs
+          ports:
+            - containerPort: 3306
+              name: mariadb
+          env:
+            - name: MARIADB_ROOT_USER
+              value: "admin"
+            - name: MARIADB_ROOT_PASSWORD
+              value: "admin"
+            - name: MARIADB_ROOT_ALLOWED_NETWORKS
+              value: "#PYTHON2BASH:['localhost','127.0.0.1','::1']"
+            - name: MARIADB_BACKUP_USER
+              value: "backup"
+            - name: MARIADB_BACKUP_PASSWORD
+              value: "backup"
+            - name: MARIADB_BACKUP_CRON_EXP
+              value: "0 1 * * *"
+            - name: MARIADB_BACKUP_TTL
+              value: "15"
+            - name: MARIADB_SSL
+              value: "true"
+            - name: MARIADB_SSL_CIPHER_SUITE
+              value: "TLSv1.2"
+            - name: MARIADB_SSL_CRT_FILENAME
+              value: "cert.crt"
+            - name: MARIADB_SSL_KEY_FILENAME
+              value: "cert.key"
+            - name: MARIADB_SSL_CA_CRT_FILENAME
+              value: "ca.crt"
+            - name: MARIADB_CFSSL_PREFIX
+              value: "database"
+      volumes:
+        - name: mariadb-storage
+          hostPath:
+            path: "/data/mariadb"
+        - name: mariadb-backup
+          hostPath:
+            path: "/backup/mariadb"
+        - name: mariadb-certs
+          hostPath:
+            path: "/data/ssl"
