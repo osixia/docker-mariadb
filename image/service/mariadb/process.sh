@@ -6,7 +6,7 @@ log-helper level eq trace && set -x
 
 if [ "${MARIADB_SSL,,}" == "true" ]; then
   log-helper info "Start mariadb with ssl..."
-  exec /usr/bin/mysqld_safe --ssl --ssl-cipher=$MARIADB_SSL_CIPHER_SUITE --ssl-ca=/container/service/mariadb/assets/certs/$MARIADB_SSL_CA_CRT_FILENAME --ssl-cert=/container/service/mariadb/assets/certs/$MARIADB_SSL_CRT_FILENAME --ssl-key=/container/service/mariadb/assets/certs/$MARIADB_SSL_KEY_FILENAME
+  exec /usr/bin/mysqld_safe --ssl --ssl-cipher=$MARIADB_SSL_CIPHER_SUITE --ssl-ca=${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CA_CRT_FILENAME --ssl-cert=${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CRT_FILENAME --ssl-key=${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_KEY_FILENAME
 else
   log-helper info "Start mariadb..."
   exec /usr/bin/mysqld_safe
