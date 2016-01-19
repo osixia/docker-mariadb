@@ -95,7 +95,6 @@ EOSQL
     mysql -u root < $TEMP_FILE
   fi
 
-  rm $TEMP_FILE
   cp /etc/mysql/my.cnf ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf
 
   touch $FIRST_START_DONE
@@ -114,8 +113,9 @@ cat > "$TEMP_FILE" <<-EOSQL
     FLUSH PRIVILEGES ;
 EOSQL
   mysql -u $MARIADB_ROOT_USER -p$MARIADB_ROOT_PASSWORD < $TEMP_FILE
-
 fi
+
+rm $TEMP_FILE
 
 log-helper info "Stop MariaDB..."
 MARIADB_PID=$(cat /var/run/mysqld/mysqld.pid)
