@@ -76,9 +76,9 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 EOSQL
 
     # add root user on specified networks
-    for network in $(complex-bash-env iterate "${MARIADB_ROOT_ALLOWED_NETWORKS}")
+    for network in $(complex-bash-env iterate MARIADB_ROOT_ALLOWED_NETWORKS)
     do
-      echo "GRANT ALL PRIVILEGES ON *.* TO '$MARIADB_ROOT_USER'@'${network}' IDENTIFIED BY '$MARIADB_ROOT_PASSWORD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
+      echo "GRANT ALL PRIVILEGES ON *.* TO '$MARIADB_ROOT_USER'@'${!network}' IDENTIFIED BY '$MARIADB_ROOT_PASSWORD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
     done
 
     # add debian user for maintenance operations
