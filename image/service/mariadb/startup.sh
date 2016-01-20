@@ -95,7 +95,7 @@ EOSQL
     mysql -u root < $TEMP_FILE
   fi
 
-  cp /etc/mysql/my.cnf ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf
+  cp -f /etc/mysql/my.cnf ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf
 
   touch $FIRST_START_DONE
 fi
