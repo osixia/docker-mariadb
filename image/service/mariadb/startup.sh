@@ -41,7 +41,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 
     log-helper info "Use config file: ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf ..."
     rm /etc/mysql/my.cnf
-    cp ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf /etc/mysql/my.cnf
+    cp -f ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf /etc/mysql/my.cnf
 
   #
   # Use mariadb default config file
