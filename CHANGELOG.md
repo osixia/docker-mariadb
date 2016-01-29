@@ -1,7 +1,7 @@
 # Changelog
 
 ## 0.2.9
-  - Update to light-baseimage:0.2.1
+  - Update to light-baseimage:0.2.2
   - MariaDB 10.1.10
 
 ## 0.2.8
