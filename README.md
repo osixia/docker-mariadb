@@ -1,9 +1,17 @@
 # osixia/mariadb
 
-[![](https://badge.imagelayers.io/osixia/mariadb:latest.svg)](https://imagelayers.io/?images=osixia/mariadb:latest 'Get your own badge on imagelayers.io') | Latest release: 0.2.9 - MariaDB 10.1.10 - [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/mariadb/) 
+[![Docker Pulls](https://img.shields.io/docker/pulls/osixia/mariadb.svg)][hub]
+[![Docker Stars](https://img.shields.io/docker/stars/osixia/mariadb.svg)][hub]
+[![Image Size](https://img.shields.io/imagelayers/image-size/osixia/mariadb/latest.svg)](https://imagelayers.io/?images=osixia/mariadb:latest)
+[![Image Layers](https://img.shields.io/imagelayers/layers/osixia/mariadb/latest.svg)](https://imagelayers.io/?images=osixia/mariadb:latest)
+
+[hub]: https://hub.docker.com/r/osixia/mariadb/
+
+Latest release: 0.2.9 - MariaDB 10.1.10 - [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/mariadb/) 
 
 A docker image to run a MariaDB server.
 > [wikipedia.org/wiki/MariaDB](https://en.wikipedia.org/wiki/MariaDB)
+
 
 - [Quick start](#quick-start)
 - [Beginner Guide](#beginner-guide)
