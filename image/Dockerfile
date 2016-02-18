@@ -33,16 +33,16 @@ RUN apt-get -y update \
     && /container/tool/add-service-available :cfssl \
     && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
        mariadb-server=$MARIADB_VERSION \
-       percona-xtrabackup
+       percona-xtrabackup \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add service directory to /container/service
 ADD service /container/service
 
-# Use baseimage install-service script and clean all
+# Use baseimage install-service script
 # https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/install-service
-RUN /container/tool/install-service \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN /container/tool/install-service
 
 # Add default env variables
 ADD environment /container/environment/99-default
