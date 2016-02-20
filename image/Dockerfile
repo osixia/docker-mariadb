@@ -1,13 +1,11 @@
-FROM osixia/light-baseimage:0.2.0
+# Use osixia/light-baseimage
+# sources: https://github.com/osixia/docker-light-baseimage
+FROM osixia/light-baseimage:0.2.2
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.1
-ENV MARIADB_VERSION 10.1.9+maria-1~jessie
-
-# Use baseimage's init system.
-# https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/run
-CMD ["/container/tool/run"]
+ENV MARIADB_VERSION 10.1.11+maria-1~jessie
 
 # Add mysql user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 # https://github.com/docker-library/mariadb/blob/master/10.0/Dockerfile
@@ -25,26 +23,29 @@ RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db 
 	     } > /etc/apt/preferences.d/mariadb
      # add repository pinning to make sure dependencies from this MariaDB repo are preferred over Debian dependencie
 
-# Install MariaDB, xtrabackup and remove default db
+# Add multiple process stack and cfssl tool
+# sources: https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/add-multiple-process-stack
+#          https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/add-service-available
+#          https://github.com/osixia/docker-light-baseimage/blob/stable/image/service-available/:cfssl/download.sh
+# Install MariaDB and xtrabackup
 RUN apt-get -y update \
-    && /container/tool/install-multiple-process-stack \
-    && /container/tool/install-service-available ssl-helper-openssl \
+    && /container/tool/add-multiple-process-stack \
+    && /container/tool/add-service-available :cfssl \
     && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-       mariadb-server=$MARIADB_VERSION percona-xtrabackup \
-    && rm -rf /var/lib/mysql \
-    && mkdir /var/lib/mysql
+       mariadb-server=$MARIADB_VERSION \
+       percona-xtrabackup \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add service directory to /container/service
 ADD service /container/service
 
-# Use baseimage install-service script and clean all
+# Use baseimage install-service script
 # https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/install-service
-RUN /container/tool/install-service \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN /container/tool/install-service
 
 # Add default env variables
-ADD env.yaml /container/environment/env.yaml
+ADD environment /container/environment/99-default
 
 # Set MariaDB database and backup directories in data volumes
 VOLUME ["/var/lib/mysql", "/data/backup"]

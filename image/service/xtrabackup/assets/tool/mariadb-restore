@@ -6,7 +6,7 @@
 #           will restore data in /data/backup/2015-10-04-17:28:56
 
 # stop mariadb
-sv stop mariadb
+sv stop /container/run/process/mariadb
 
 # backup mariadb database
 [ -d /tmp/mysql/ ] && rm -rf /tmp/mysql/
@@ -21,4 +21,4 @@ innobackupex --copy-back /data/backup/$1
 chown -R mysql:mysql /var/lib/mysql
 
 # restart mariadb
-sv start mariadb
+sv start /container/run/process/mariadb

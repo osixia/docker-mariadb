@@ -1,0 +1,25 @@
+MARIADB_ROOT_USER: admin
+MARIADB_ROOT_PASSWORD: admin
+
+MARIADB_ROOT_ALLOWED_NETWORKS:
+  - localhost
+  - 127.0.0.1
+  - ::1
+
+MARIADB_BACKUP_USER: backup
+MARIADB_BACKUP_PASSWORD: backup
+
+# Backup cron
+MARIADB_BACKUP_CRON_EXP: "0 4 * * *" #every day at 4:00am
+MARIADB_BACKUP_TTL: 15 # Delete backups that are over 15 days
+
+# ssl
+MARIADB_SSL: true
+MARIADB_SSL_CIPHER_SUITE: TLSv1.2
+
+MARIADB_SSL_CRT_FILENAME: mariadb.crt
+MARIADB_SSL_KEY_FILENAME: mariadb.key
+MARIADB_SSL_CA_CRT_FILENAME: ca.crt
+
+# cfssl environment variables prefix
+MARIADB_CFSSL_PREFIX: database # cfssl-helper first search config from DATABASE_CFSSL_* variables, before CFSSL_* variables.
