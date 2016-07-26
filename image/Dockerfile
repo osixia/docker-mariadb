@@ -1,11 +1,11 @@
 # Use osixia/light-baseimage
 # sources: https://github.com/osixia/docker-light-baseimage
-FROM osixia/light-baseimage:0.2.2
+FROM osixia/light-baseimage:0.2.4
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.1
-ENV MARIADB_VERSION 10.1.11+maria-1~jessie
+ENV MARIADB_VERSION 10.1.16+maria-1~jessie
 
 # Add mysql user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 # https://github.com/docker-library/mariadb/blob/master/10.0/Dockerfile
