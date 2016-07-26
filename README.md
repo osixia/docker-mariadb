@@ -7,7 +7,7 @@
 
 [hub]: https://hub.docker.com/r/osixia/mariadb/
 
-Latest release: 0.2.10 - MariaDB 10.1.11 - [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/mariadb/) 
+Latest release: 0.2.10 - MariaDB 10.1.16 - [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/mariadb/) 
 
 A docker image to run a MariaDB server.
 > [wikipedia.org/wiki/MariaDB](https://en.wikipedia.org/wiki/MariaDB)
