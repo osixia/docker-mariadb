@@ -2,8 +2,6 @@
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/osixia/mariadb.svg)][hub]
 [![Docker Stars](https://img.shields.io/docker/stars/osixia/mariadb.svg)][hub]
-[![Image Size](https://img.shields.io/imagelayers/image-size/osixia/mariadb/latest.svg)](https://imagelayers.io/?images=osixia/mariadb:latest)
-[![Image Layers](https://img.shields.io/imagelayers/layers/osixia/mariadb/latest.svg)](https://imagelayers.io/?images=osixia/mariadb:latest)
 
 [hub]: https://hub.docker.com/r/osixia/mariadb/
 
