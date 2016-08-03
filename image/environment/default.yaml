@@ -21,5 +21,5 @@ MARIADB_SSL_CRT_FILENAME: mariadb.crt
 MARIADB_SSL_KEY_FILENAME: mariadb.key
 MARIADB_SSL_CA_CRT_FILENAME: ca.crt
 
-# cfssl environment variables prefix
-MARIADB_CFSSL_PREFIX: database # cfssl-helper first search config from DATABASE_CFSSL_* variables, before CFSSL_* variables.
+# ssl-helper environment variables prefix
+MARIADB_SSL_HELPER_PREFIX: database # ssl-helper first search config from DATABASE_SSL_HELPER_* variables, before SSL_HELPER_* variables.

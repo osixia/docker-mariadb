@@ -51,7 +51,7 @@ spec:
               value: "cert.key"
             - name: MARIADB_SSL_CA_CRT_FILENAME
               value: "ca.crt"
-            - name: MARIADB_CFSSL_PREFIX
+            - name: MARIADB_SSL_HELPER_PREFIX
               value: "database"
       volumes:
         - name: mariadb-storage

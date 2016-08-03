@@ -219,7 +219,7 @@ SSL :
 	More information at : https://mariadb.com/kb/en/mariadb/ssl-system-variables/
 
 Other environment variables:
-- **MARIADB_CFSSL_PREFIX**: cfssl environment variables prefix. Defaults to `database`, cfssl-helper first search config from DATABASE_CFSSL_* variables, before CFSSL_* variables.
+- **MARIADB_SSL_HELPER_PREFIX**: ssl-helper environment variables prefix. Defaults to `database`, ssl-helper first search config from DATABASE_SSL_HELPER_* variables, before SSL_HELPER_* variables.
 
 ### Set your own environment variables
 
