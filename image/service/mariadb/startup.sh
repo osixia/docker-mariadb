@@ -58,7 +58,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   #
   # there is no database
   #
-  if [ -z "$(ls -A /var/lib/mysql)" ]; then
+  if [ -z "$(ls -A -I lost+found /var/lib/mysql)" ]; then
 
     log-helper info "Init new database..."
 

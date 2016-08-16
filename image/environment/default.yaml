@@ -10,7 +10,7 @@ MARIADB_BACKUP_USER: backup
 MARIADB_BACKUP_PASSWORD: backup
 
 # Backup cron
-MARIADB_BACKUP_CRON_EXP: "0 4 * * *" #every day at 4:00am
+MARIADB_BACKUP_CRON_EXP: 0 4 * * * #every day at 4:00am
 MARIADB_BACKUP_TTL: 15 # Delete backups that are over 15 days
 
 # ssl
