@@ -202,7 +202,7 @@ Backup :
 - **MARIADB_BACKUP_USER**: The database backup user username. Defaults to `backup`
 - **MARIADB_BACKUP_PASSWORD**: The database backup user password. Defaults to `backup`
 
-- **MARIADB_BACKUP_CRON_EXP**: Cron expression to schedule data backup. Defaults to `"0 4 * * *"`. Every days at 4am.
+- **MARIADB_BACKUP_CRON_EXP**: Cron expression to schedule data backup. Defaults to `0 4 * * *`. Every days at 4am.
 
 - **MARIADB_BACKUP_TTL**: Backup TTL in days. Defaults to `15`.
 
