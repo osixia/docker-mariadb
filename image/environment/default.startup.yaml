@@ -1,0 +1,7 @@
+MARIADB_ROOT_ALLOWED_NETWORKS:
+  - localhost
+  - 127.0.0.1
+  - ::1
+
+# ssl-helper environment variables prefix
+MARIADB_SSL_HELPER_PREFIX: database # ssl-helper first search config from DATABASE_SSL_HELPER_* variables, before SSL_HELPER_* variables.
