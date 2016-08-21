@@ -5,3 +5,5 @@ MARIADB_ROOT_ALLOWED_NETWORKS:
 
 # ssl-helper environment variables prefix
 MARIADB_SSL_HELPER_PREFIX: database # ssl-helper first search config from DATABASE_SSL_HELPER_* variables, before SSL_HELPER_* variables.
+
+SSL_HELPER_AUTO_RENEW_SERVICES_IMPACTED: mariadb
