@@ -2,6 +2,7 @@
 
 ## 0.2.11
   - Update to light-baseimage:0.2.5
+  - MariaDB 10.1.17
 
 ## 0.2.10
   - Update to light-baseimage:0.2.4
