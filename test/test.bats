@@ -11,7 +11,7 @@ load test_helper
 @test "container with uninitialized database" {
 
   run_image
-  wait_service mysqld
+  wait_process mysqld
   sleep 5
   run docker exec $CONTAINER_ID mysql -u admin -padmin --skip-column-names -e "select distinct user from mysql.user where user='admin';"
   clear_container
@@ -24,12 +24,12 @@ load test_helper
 @test "start, stop and restart container with uninitialized database" {
 
   run_image
-  wait_service mysqld
+  wait_process mysqld
   sleep 5
   docker exec $CONTAINER_ID mysql -u admin -padmin --skip-column-names -e "CREATE USER 'hello'@'%' IDENTIFIED BY 'password' ;"
   stop_container
   start_container
-  wait_service mysqld
+  wait_process mysqld
   sleep 5
   run docker exec $CONTAINER_ID mysql -u admin -padmin --skip-column-names -e "select distinct user from mysql.user where user='hello';"
   clear_container
@@ -42,7 +42,7 @@ load test_helper
 @test "container with initialized database" {
 
   run_image -v $BATS_TEST_DIRNAME/database:/var/lib/mysql
-  wait_service mysqld
+  wait_process mysqld
   sleep 5
   run docker exec $CONTAINER_ID mysql -u admin -padmin --skip-column-names -e "select distinct user from mysql.user where user='existing-hello';"
   clear_container
