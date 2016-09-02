@@ -1,11 +1,11 @@
 # Use osixia/light-baseimage
 # sources: https://github.com/osixia/docker-light-baseimage
-FROM osixia/light-baseimage:0.2.4
+FROM osixia/light-baseimage:0.2.5
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.1
-ENV MARIADB_VERSION 10.1.16+maria-1~jessie
+ENV MARIADB_VERSION 10.1.17+maria-1~jessie
 
 # Add mysql user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 # https://github.com/docker-library/mariadb/blob/master/10.0/Dockerfile
@@ -23,14 +23,14 @@ RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db 
 	     } > /etc/apt/preferences.d/mariadb
      # add repository pinning to make sure dependencies from this MariaDB repo are preferred over Debian dependencie
 
-# Add multiple process stack and cfssl tool
+# Add multiple process stack and ssl tools
 # sources: https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/add-multiple-process-stack
 #          https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/add-service-available
-#          https://github.com/osixia/docker-light-baseimage/blob/stable/image/service-available/:cfssl/download.sh
+#          https://github.com/osixia/docker-light-baseimage/blob/stable/image/service-available/:ssl-tools/download.sh
 # Install MariaDB and xtrabackup
 RUN apt-get -y update \
     && /container/tool/add-multiple-process-stack \
-    && /container/tool/add-service-available :cfssl \
+    && /container/tool/add-service-available :ssl-tools \
     && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
        mariadb-server=$MARIADB_VERSION \
        percona-xtrabackup \

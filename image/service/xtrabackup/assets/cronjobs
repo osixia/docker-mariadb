@@ -1,2 +1,3 @@
 # Backup
 {{ MARIADB_BACKUP_CRON_EXP }} root /sbin/mariadb-backup 2>&1 | /usr/bin/logger -s -t xtrabackup
+# empty line

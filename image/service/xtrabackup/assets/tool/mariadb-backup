@@ -9,7 +9,7 @@ backupPath="/data/backup"
 # delete backups that are over $MARIADB_BACKUP_TTL days
 find $backupPath -type f -mtime +$MARIADB_BACKUP_TTL -exec rm {} \;
 
-dateFileFormat="+%F-%T"
+dateFileFormat="+%Y%m%dT%H%M%S"
 newBackupPath="$backupPath/$(date "$dateFileFormat")"
 
 innobackupex --user=$MARIADB_BACKUP_USER  --password=$MARIADB_BACKUP_PASSWORD --no-timestamp $newBackupPath

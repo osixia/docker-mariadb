@@ -28,9 +28,9 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   if [ "${MARIADB_SSL,,}" == "true" ]; then
     log-helper info "SSL config..."
 
-    # generate a certificate and key with cfssl tool if LDAP_CRT and LDAP_KEY files don't exists
-    # https://github.com/osixia/docker-light-baseimage/blob/stable/image/service-available/:cfssl/assets/tool/cfssl-helper
-    cfssl-helper ${MARIADB_CFSSL_PREFIX} "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CRT_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_KEY_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CA_CRT_FILENAME"
+    # generate a certificate and key with ssl-helper if LDAP_CRT and LDAP_KEY files don't exists
+    # https://github.com/osixia/docker-light-baseimage/blob/stable/image/service-available/:ssl-tools/assets/tool/ssl-helper
+    ssl-helper ${MARIADB_SSL_HELPER_PREFIX} "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CRT_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_KEY_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CA_CRT_FILENAME"
     chown -R mysql:mysql ${CONTAINER_SERVICE_DIR}/mariadb
   fi
 
@@ -58,7 +58,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   #
   # there is no database
   #
-  if [ -z "$(ls -A /var/lib/mysql)" ]; then
+  if [ -z "$(ls -A -I lost+found /var/lib/mysql)" ]; then
 
     log-helper info "Init new database..."
 
