@@ -2,13 +2,14 @@
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/osixia/mariadb.svg)][hub]
 [![Docker Stars](https://img.shields.io/docker/stars/osixia/mariadb.svg)][hub]
+[![](https://images.microbadger.com/badges/image/osixia/mariadb.svg)](http://microbadger.com/images/osixia/mariadb "Get your own image badge on microbadger.com")
 
 [hub]: https://hub.docker.com/r/osixia/mariadb/
 
 Latest release: 0.2.11 - MariaDB 10.1.17 - [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/mariadb/) 
 
-A docker image to run a MariaDB server.
-> [wikipedia.org/wiki/MariaDB](https://en.wikipedia.org/wiki/MariaDB)
+**A docker image to run a MariaDB server.**
+> [mariadb.org](https://mariadb.org/)
 
 
 - [Quick start](#quick-start)
