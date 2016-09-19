@@ -8,9 +8,10 @@
 
 Latest release: 0.2.11 - MariaDB 10.1.17 - [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/mariadb/) 
 
-**A docker image to run a MariaDB server.**
-> [mariadb.org](https://mariadb.org/)
+**A docker image to run MariaDB and XtraBackup periodically.**
+> [MariaDB](https://mariadb.org/)
 
+> [Percona XtraBackup](https://www.percona.com/doc/percona-xtrabackup/2.4/index.html)
 
 - [Quick start](#quick-start)
 - [Beginner Guide](#beginner-guide)
