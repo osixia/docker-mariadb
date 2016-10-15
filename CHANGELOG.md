@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.1.17
+  - Image tag now follow MariaDB version number
+  - MariaDB 10.1.18
+
 ## 0.2.11
   - Update to light-baseimage:0.2.5
   - MariaDB 10.1.17
