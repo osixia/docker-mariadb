@@ -1,6 +1,9 @@
 # Changelog
 
-## 10.1.17
+## 10.1.19
+  - Backups are now compressed and chmod 600
+
+## 10.1.18
   - Image tag now follow MariaDB version number
   - MariaDB 10.1.18
 

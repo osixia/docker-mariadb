@@ -14,6 +14,12 @@ sv stop /container/run/process/mariadb
 mkdir /tmp/mysql/
 mv /var/lib/mysql/* /tmp/mysql/
 
+# decompress backup
+innobackupex --decompress /data/backup/$1
+
+# prepare backup
+innobackupex --apply-log /data/backup/$1
+
 # restore backup
 innobackupex --copy-back /data/backup/$1
 
@@ -22,3 +28,5 @@ chown -R mysql:mysql /var/lib/mysql
 
 # restart mariadb
 sv start /container/run/process/mariadb
+
+exit 0
