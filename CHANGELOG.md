@@ -2,6 +2,7 @@
 
 ## 10.1.19
   - Backups are now compressed and chmod 600
+  - xtrabackup 2.4
 
 ## 10.1.18
   - Image tag now follow MariaDB version number

@@ -12,7 +12,7 @@ sv stop /container/run/process/mariadb
 [ -d /tmp/mysql/ ] && rm -rf /tmp/mysql/
 
 mkdir /tmp/mysql/
-mv /var/lib/mysql/* /tmp/mysql/
+mv /var/lib/mysql/* /tmp/mysql/ || true
 
 # decompress backup
 innobackupex --decompress /data/backup/$1
