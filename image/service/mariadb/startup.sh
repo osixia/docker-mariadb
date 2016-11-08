@@ -86,7 +86,7 @@ EOSQL
 
     # add backup user
     echo "CREATE USER '$MARIADB_BACKUP_USER'@'localhost' IDENTIFIED BY '$MARIADB_BACKUP_PASSWORD';" >> "$TEMP_FILE"
-    echo "GRANT RELOAD, LOCK TABLES, REPLICATION CLIENT ON *.* TO '$MARIADB_BACKUP_USER'@'localhost';" >> "$TEMP_FILE"
+    echo "GRANT PROCESS, RELOAD, LOCK TABLES, REPLICATION CLIENT ON *.* TO '$MARIADB_BACKUP_USER'@'localhost';" >> "$TEMP_FILE"
 
     # flush privileges
     echo "FLUSH PRIVILEGES ;" >> "$TEMP_FILE"
@@ -112,6 +112,13 @@ cat > "$TEMP_FILE" <<-EOSQL
     GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;
     FLUSH PRIVILEGES ;
 EOSQL
+
+  # add process to backup user
+  # due to update to xtrabackup 2.4
+  # to remove in future in a near future
+  echo "GRANT PROCESS, RELOAD, LOCK TABLES, REPLICATION CLIENT ON *.* TO '$MARIADB_BACKUP_USER'@'localhost';" >> "$TEMP_FILE"
+  echo "FLUSH PRIVILEGES ;" >> "$TEMP_FILE"
+
   mysql -u $MARIADB_ROOT_USER -p$MARIADB_ROOT_PASSWORD < $TEMP_FILE
 fi
 
