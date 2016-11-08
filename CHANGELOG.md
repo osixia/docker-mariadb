@@ -1,5 +1,11 @@
 # Changelog
 
+## 10.1.19
+  - Backups are now compressed and chmod 600
+  - xtrabackup 2.4
+  - MariaDB 10.1.19
+  - Update to light-baseimage:0.2.6
+
 ## 10.1.18
   - Image tag now follow MariaDB version number
   - MariaDB 10.1.18
