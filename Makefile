@@ -6,10 +6,10 @@ VERSION = 10.1.20
 all: build
 
 build:
-	docker build -t $(NAME):$(VERSION) --rm image
+	docker build --pull -t $(NAME):$(VERSION) --rm image
 
 build-nocache:
-	docker build -t $(NAME):$(VERSION) --no-cache --rm image
+	docker build --pull -t $(NAME):$(VERSION) --no-cache --rm image
 
 test:
 	env NAME=$(NAME) VERSION=$(VERSION) bats test/test.bats
