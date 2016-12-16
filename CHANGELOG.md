@@ -1,5 +1,8 @@
 # Changelog
 
+## 10.1.20
+  - MariaDB 10.1.20
+
 ## 10.1.19
   - Backups are now compressed and chmod 600
   - xtrabackup 2.4

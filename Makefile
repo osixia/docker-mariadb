@@ -1,15 +1,15 @@
 NAME = osixia/mariadb
-VERSION = 10.1.19
+VERSION = 10.1.20
 
 .PHONY: all build build-nocache test tag_latest release
 
 all: build
 
 build:
-	docker build -t $(NAME):$(VERSION) --rm image
+	docker build --pull -t $(NAME):$(VERSION) --rm image
 
 build-nocache:
-	docker build -t $(NAME):$(VERSION) --no-cache --rm image
+	docker build --pull -t $(NAME):$(VERSION) --no-cache --rm image
 
 test:
 	env NAME=$(NAME) VERSION=$(VERSION) bats test/test.bats
