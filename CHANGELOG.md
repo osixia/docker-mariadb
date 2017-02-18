@@ -1,5 +1,8 @@
 # Changelog
 
+## 10.1.21
+  - MariaDB 10.1.21
+
 ## 10.1.20
   - MariaDB 10.1.20
 
