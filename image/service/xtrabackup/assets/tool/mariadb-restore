@@ -6,7 +6,7 @@
 #           will restore data in /data/backup/2015-10-04-17:28:56
 
 # stop mariadb
-sv stop /container/run/process/mariadb
+sv stop /container/run/process/mariadb || true
 
 # backup mariadb database
 [ -d /tmp/mysql/ ] && rm -rf /tmp/mysql/
