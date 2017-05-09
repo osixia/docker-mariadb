@@ -1,5 +1,8 @@
 # Changelog
 
+## 10.1.23
+  - MariaDB 10.1.23
+
 ## 10.1.22
   - MariaDB 10.1.22
   - Fix restoration of not running database
