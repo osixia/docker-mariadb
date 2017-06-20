@@ -4,8 +4,8 @@ FROM osixia/light-baseimage:0.2.6
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # MariaDB version
-ENV MARIADB_MAJOR 10.1
-ENV MARIADB_VERSION 10.1.23+maria-1~jessie
+ENV MARIADB_MAJOR 10.2
+ENV MARIADB_VERSION 10.2.6+maria~jessie
 
 # Add mysql user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 # https://github.com/docker-library/mariadb/blob/master/10.0/Dockerfile

@@ -12,11 +12,6 @@ chown -R mysql:mysql ${CONTAINER_SERVICE_DIR}/mariadb
 # config sql queries
 TEMP_FILE='/tmp/mysql-start.sql'
 
-# The password for 'debian-sys-maint'@'localhost' is auto generated.
-# The database inside of DATA_DIR may not have been generated with this password.
-# So, we need to set this for our database to be portable.
-# https://github.com/Painted-Fox/docker-mariadb/blob/master/scripts/first_run.sh
-DB_MAINT_PASS=$(cat /etc/mysql/debian.cnf | grep -m 1 "password\s*=\s*"| sed 's/^password\s*=\s*//')
 
 FIRST_START_DONE="${CONTAINER_STATE_DIR}/docker-mariadb-first-start-done"
 # container first start
@@ -67,7 +62,22 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 
     # start MariaDB
     log-helper info "Start MariaDB..."
-    service mysql start || true
+    /usr/bin/mysqld_safe --skip-networking --socket=/var/run/mysqld/mysqld.sock &
+
+    mysql=( mysql --protocol=socket -uroot -hlocalhost --socket="/var/run/mysqld/mysqld.sock" )
+
+    for i in {30..0}; do
+			if echo 'SELECT 1' | "${mysql}" &> /dev/null; then
+				break
+			fi
+			log-helper info "MySQL init process in progress..."
+			sleep 1
+		done
+
+    if [ "$i" = 0 ]; then
+			log-helper error "MySQL init process failed."
+			exit 1
+		fi
 
     # drop all user and test database
     cat > "$TEMP_FILE" <<-EOSQL
@@ -81,8 +91,31 @@ EOSQL
       echo "GRANT ALL PRIVILEGES ON *.* TO '$MARIADB_ROOT_USER'@'${!network}' IDENTIFIED BY '$MARIADB_ROOT_PASSWORD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
     done
 
-    # add debian user for maintenance operations
-    echo "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;" >> "$TEMP_FILE"
+    # add databases
+    for database in $(complex-bash-env iterate MARIADB_DATABASES)
+    do
+      echo "CREATE DATABASE IF NOT EXISTS \`${!database}\` ;" >> "$TEMP_FILE"
+    done
+
+    # add users
+    for user in $(complex-bash-env iterate MARIADB_USERS)
+    do
+      if [ $(complex-bash-env isRow "${!user}") = true ]; then
+        u=$(complex-bash-env getRowKey "${!user}")
+        p=$(complex-bash-env getRowValue "${!user}")
+
+        echo "CREATE USER '$u'@'%' IDENTIFIED BY '$p' ;" >> "$TEMP_FILE"
+
+        for database in $(complex-bash-env iterate MARIADB_DATABASES)
+        do
+          echo "GRANT ALL ON \`${!database}\`.* TO '$u'@'%' ;"  >> "$TEMP_FILE"
+        done
+
+      else
+        echo "Error please set a password for user: ${!user}"
+        exit 1
+      fi
+    done
 
     # add backup user
     echo "CREATE USER '$MARIADB_BACKUP_USER'@'localhost' IDENTIFIED BY '$MARIADB_BACKUP_PASSWORD';" >> "$TEMP_FILE"
@@ -91,43 +124,23 @@ EOSQL
     # flush privileges
     echo "FLUSH PRIVILEGES ;" >> "$TEMP_FILE"
 
+    cat $TEMP_FILE
+
     # execute config queries
-    mysql -u root < $TEMP_FILE
+    ${mysql} < $TEMP_FILE
+
+    rm $TEMP_FILE
   fi
+
+  log-helper info "Stop MariaDB..."
+  MARIADB_PID=$(cat /var/run/mysqld/mysqld.pid)
+  kill -15 $MARIADB_PID
+  while [ -e /proc/$MARIADB_PID ]; do sleep 0.1; done # wait until mariadb is terminated
 
   cp -f /etc/mysql/my.cnf ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf
 
   touch $FIRST_START_DONE
 fi
-
-# if mariadb is not already started
-if [ ! -e "/var/run/mysqld/mysqld.pid" ]; then
-  log-helper info "Start mariadb..."
-  service mysql start || true
-
-  # add debian user for maintenance operations
-cat > "$TEMP_FILE" <<-EOSQL
-    DELETE FROM mysql.user where user = 'debian-sys-maint' ;
-    FLUSH PRIVILEGES ;
-    GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '$DB_MAINT_PASS' ;
-    FLUSH PRIVILEGES ;
-EOSQL
-
-  # add process to backup user
-  # due to update to xtrabackup 2.4
-  # to remove in future in a near future
-  echo "GRANT PROCESS, RELOAD, LOCK TABLES, REPLICATION CLIENT ON *.* TO '$MARIADB_BACKUP_USER'@'localhost';" >> "$TEMP_FILE"
-  echo "FLUSH PRIVILEGES ;" >> "$TEMP_FILE"
-
-  mysql -u $MARIADB_ROOT_USER -p$MARIADB_ROOT_PASSWORD < $TEMP_FILE
-fi
-
-rm $TEMP_FILE
-
-log-helper info "Stop MariaDB..."
-MARIADB_PID=$(cat /var/run/mysqld/mysqld.pid)
-kill -15 $MARIADB_PID
-while [ -e /proc/$MARIADB_PID ]; do sleep 0.1; done # wait until slapd is terminated
 
 ln -sf ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf /etc/mysql/my.cnf
 ln -sf ${CONTAINER_SERVICE_DIR}/mariadb/assets/conf.d/* /etc/mysql/conf.d/

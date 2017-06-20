@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.2.6
+  - MariaDB 10.2.6
+  - Add MARIADB_DATABASES and MARIADB_USERS environment variable, to create databases and users.
+
 ## 10.1.23
   - MariaDB 10.1.23
 
