@@ -124,18 +124,17 @@ EOSQL
     # flush privileges
     echo "FLUSH PRIVILEGES ;" >> "$TEMP_FILE"
 
-    cat $TEMP_FILE
-
     # execute config queries
     ${mysql} < $TEMP_FILE
 
     rm $TEMP_FILE
-  fi
 
-  log-helper info "Stop MariaDB..."
-  MARIADB_PID=$(cat /var/run/mysqld/mysqld.pid)
-  kill -15 $MARIADB_PID
-  while [ -e /proc/$MARIADB_PID ]; do sleep 0.1; done # wait until mariadb is terminated
+    log-helper info "Stop MariaDB..."
+    MARIADB_PID=$(cat /var/run/mysqld/mysqld.pid)
+    kill -15 $MARIADB_PID
+    while [ -e /proc/$MARIADB_PID ]; do sleep 0.1; done # wait until mariadb is terminated
+
+  fi
 
   cp -f /etc/mysql/my.cnf ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf
 
