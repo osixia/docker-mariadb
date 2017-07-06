@@ -14,7 +14,7 @@ RUN groupadd -r mysql && useradd -r -g mysql mysql
 # Add MariaDB and Percona repositories
 RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8 \
     && echo "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/debian stretch main" > /etc/apt/sources.list.d/mariadb.list \
-    && apt-key adv --keyserver keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A \
+    && apt-key adv --keyserver keys.gnupg.net --recv-keys 0x9334A25F8507EFA5 \
     && echo "deb https://repo.percona.com/apt stretch main" > /etc/apt/sources.list.d/percona.list \
     && { \
 		     echo 'Package: *'; \
@@ -31,7 +31,7 @@ RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8 
 RUN apt-get -y update \
     && /container/tool/add-multiple-process-stack \
     && /container/tool/add-service-available :ssl-tools \
-    && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes --no-install-recommends \
+    && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
        mariadb-server=$MARIADB_VERSION \
        percona-xtrabackup-24 \
        qpress \
