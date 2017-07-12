@@ -196,17 +196,19 @@ Used when the container is started without an existing database:
 
 	To convert yaml to python online: http://yaml-online-parser.appspot.com/
 
-- **MARIADB_DATABASES**: databases to be created on image startup. If user/password was supplied (see below) then  user will be granted superuser access (corresponding to GRANT ALL) to this database. Defaults to '' (none).
+- **MARIADB_DATABASES**: databases to be created on image startup. If user/password was supplied (see below) then  user will be granted superuser access (corresponding to GRANT ALL) to this database. You can also specify a user/password per database (see product database example) Defaults to '' (none).
 
 	this variable allows multiples values, for example :
 	```yaml
-  - products
-  - posts
-  - tomatoes
+	  - products:
+	    - user: password
+	    - user2: passw0rd
+	  - posts
+	  - tomatoes
 	```
 	If you want to set this variable at docker run command add the tag `#PYTHON2BASH:` and convert the yaml in python:
 
-		docker run --env MARIADB_DATABASES="#PYTHON2BASH:['products','posts','tomatoes']" --detach osixia/mariadb:10.2.6
+		docker run --env MARIADB_DATABASES="#PYTHON2BASH:[{'products': [{'user': 'password'}, {'user2': 'passw0rd'}]},'posts','tomatoes']" --detach osixia/mariadb:10.2.6
 
 	To convert yaml to python online: http://yaml-online-parser.appspot.com/
 
@@ -216,7 +218,7 @@ Used when the container is started without an existing database:
 	```yaml
   - boby: mcD0nald
   - billy: th3k1ng
-  - tomatoes: ketchup
+  - tomatoe: ketchup
 	```
 	If you want to set this variable at docker run command add the tag `#PYTHON2BASH:` and convert the yaml in python:
 

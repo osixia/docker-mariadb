@@ -91,31 +91,53 @@ EOSQL
       echo "GRANT ALL PRIVILEGES ON *.* TO '$MARIADB_ROOT_USER'@'${!network}' IDENTIFIED BY '$MARIADB_ROOT_PASSWORD' WITH GRANT OPTION ;" >> "$TEMP_FILE"
     done
 
+
+    function addUsers() {
+      local users=$1
+      local databases=$2
+      for user in $(complex-bash-env iterate "${users}")
+      do
+        if [ $(complex-bash-env isRow "${!user}") = true ]; then
+          u=$(complex-bash-env getRowKey "${!user}")
+          p=$(complex-bash-env getRowValue "${!user}")
+
+          echo "CREATE USER '$u'@'%' IDENTIFIED BY '$p' ;" >> "$TEMP_FILE"
+
+          for database in $(complex-bash-env iterate "${databases}")
+          do
+            if [ $(complex-bash-env isRow "${!database}") = true ]; then
+              database=$(complex-bash-env getRowKeyVarName "${!database}")
+            fi
+            echo "GRANT ALL ON \`${!database}\`.* TO '$u'@'%' ;"  >> "$TEMP_FILE"
+          done
+
+        else
+          echo "Error please set a password for user: ${!user}"
+          exit 1
+        fi
+      done
+    }
+
     # add databases
     for database in $(complex-bash-env iterate MARIADB_DATABASES)
     do
+      users=""
+      # this datase has users
+      if [ $(complex-bash-env isRow "${!database}") = true ]; then
+        users=$(complex-bash-env getRowValueVarName "${!database}")
+        database=$(complex-bash-env getRowKeyVarName "${!database}")
+      fi
+
       echo "CREATE DATABASE IF NOT EXISTS \`${!database}\` ;" >> "$TEMP_FILE"
-    done
 
-    # add users
-    for user in $(complex-bash-env iterate MARIADB_USERS)
-    do
-      if [ $(complex-bash-env isRow "${!user}") = true ]; then
-        u=$(complex-bash-env getRowKey "${!user}")
-        p=$(complex-bash-env getRowValue "${!user}")
-
-        echo "CREATE USER '$u'@'%' IDENTIFIED BY '$p' ;" >> "$TEMP_FILE"
-
-        for database in $(complex-bash-env iterate MARIADB_DATABASES)
-        do
-          echo "GRANT ALL ON \`${!database}\`.* TO '$u'@'%' ;"  >> "$TEMP_FILE"
-        done
-
-      else
-        echo "Error please set a password for user: ${!user}"
-        exit 1
+      if [ -n "${users}" ]; then
+        # add database specific users
+        addUsers "${users}" "${database}"
       fi
     done
+
+    # add global users
+    addUsers MARIADB_USERS MARIADB_DATABASES
 
     # add backup user
     echo "CREATE USER '$MARIADB_BACKUP_USER'@'localhost' IDENTIFIED BY '$MARIADB_BACKUP_PASSWORD';" >> "$TEMP_FILE"
