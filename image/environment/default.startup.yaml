@@ -1,7 +1,22 @@
+MARIADB_ROOT_USER: admin
+MARIADB_ROOT_PASSWORD: admin
+
 MARIADB_ROOT_ALLOWED_NETWORKS:
   - localhost
   - 127.0.0.1
   - ::1
+
+MARIADB_DATABASES:
+  - products:
+    - user: password
+    - user2: passw0rd
+  - posts
+  - tomatoes
+
+MARIADB_USERS:
+  - boby: mcD0nald
+  - billy: th3k1ng
+  - tomatoe: ketchup
 
 # ssl-helper environment variables prefix
 MARIADB_SSL_HELPER_PREFIX: database # ssl-helper first search config from DATABASE_SSL_HELPER_* variables, before SSL_HELPER_* variables.
