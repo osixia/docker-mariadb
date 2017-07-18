@@ -147,7 +147,7 @@ EOSQL
     echo "FLUSH PRIVILEGES ;" >> "$TEMP_FILE"
 
     # execute config queries
-    ${mysql} < $TEMP_FILE
+    ${mysql} < $TEMP_FILE 
 
     rm $TEMP_FILE
 
