@@ -41,7 +41,7 @@ load test_helper
 
 @test "container with initialized database" {
 
-  run_image -v $BATS_TEST_DIRNAME/database:/var/lib/mysql
+  run_image -v $BATS_TEST_DIRNAME/database:/container/test/database
   wait_process mysqld
   sleep 5
   run docker exec $CONTAINER_ID mysql -u admin -padmin --skip-column-names -e "select distinct user from mysql.user where user='existing-hello';"

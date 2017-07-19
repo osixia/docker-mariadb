@@ -1,6 +1,4 @@
-MARIADB_ROOT_USER: admin
-MARIADB_ROOT_PASSWORD: admin
-
+# backup user
 MARIADB_BACKUP_USER: backup
 MARIADB_BACKUP_PASSWORD: backup
 
