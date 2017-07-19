@@ -196,7 +196,7 @@ Used when the container is started without an existing database:
 
 	To convert yaml to python online: http://yaml-online-parser.appspot.com/
 
-- **MARIADB_DATABASES**: databases to be created on image startup. If user/password was supplied (see below) then  user will be granted superuser access (corresponding to GRANT ALL) to this database. You can also specify a user/password per database (see product database example) Defaults to '' (none).
+- **MARIADB_DATABASES**: databases to be created on image startup. If user/password was supplied (see below) then  user will be granted superuser access (corresponding to GRANT ALL) to this database. You can also specify a user/password per database (see product database example) Defaults to ` ` (none).
 
 	this variable allows multiples values, for example :
 	```yaml
@@ -212,7 +212,7 @@ Used when the container is started without an existing database:
 
 	To convert yaml to python online: http://yaml-online-parser.appspot.com/
 
-- **MARIADB_USERS**: create a new users with corresponding passwords. These users will be granted superuser permissions (see above) for the databases specified by the MARIADB_DATABASES variable. Defaults to '' (none).
+- **MARIADB_USERS**: create a new users with corresponding passwords. These users will be granted superuser permissions (see above) for the databases specified by the MARIADB_DATABASES variable. Defaults to ` ` (none).
 
 	this variable allows multiples values set has user: password for example :
 	```yaml

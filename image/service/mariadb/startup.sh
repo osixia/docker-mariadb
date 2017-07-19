@@ -95,25 +95,28 @@ EOSQL
     function addUsers() {
       local users=$1
       local databases=$2
+
       for user in $(complex-bash-env iterate "${users}")
       do
-        if [ $(complex-bash-env isRow "${!user}") = true ]; then
-          u=$(complex-bash-env getRowKey "${!user}")
-          p=$(complex-bash-env getRowValue "${!user}")
+        if [ -n "${!user}" ]; then
+          if [ $(complex-bash-env isRow "${!user}") = true ]; then
+            u=$(complex-bash-env getRowKey "${!user}")
+            p=$(complex-bash-env getRowValue "${!user}")
 
-          echo "CREATE USER '$u'@'%' IDENTIFIED BY '$p' ;" >> "$TEMP_FILE"
+            echo "CREATE USER '$u'@'%' IDENTIFIED BY '$p' ;" >> "$TEMP_FILE"
 
-          for database in $(complex-bash-env iterate "${databases}")
-          do
-            if [ $(complex-bash-env isRow "${!database}") = true ]; then
-              database=$(complex-bash-env getRowKeyVarName "${!database}")
-            fi
-            echo "GRANT ALL ON \`${!database}\`.* TO '$u'@'%' ;"  >> "$TEMP_FILE"
-          done
+            for database in $(complex-bash-env iterate "${databases}")
+            do
+              if [ $(complex-bash-env isRow "${!database}") = true ]; then
+                database=$(complex-bash-env getRowKeyVarName "${!database}")
+              fi
+              [ -n "${!database}" ] && echo "GRANT ALL ON \`${!database}\`.* TO '$u'@'%' ;"  >> "$TEMP_FILE"
+            done
 
-        else
-          echo "Error please set a password for user: ${!user}"
-          exit 1
+          else
+            echo "Error please set a password for user: ${!user}"
+            exit 1
+          fi
         fi
       done
     }
@@ -128,7 +131,7 @@ EOSQL
         database=$(complex-bash-env getRowKeyVarName "${!database}")
       fi
 
-      echo "CREATE DATABASE IF NOT EXISTS \`${!database}\` ;" >> "$TEMP_FILE"
+      [ -n "${!database}" ] && echo "CREATE DATABASE IF NOT EXISTS \`${!database}\` ;" >> "$TEMP_FILE"
 
       if [ -n "${users}" ]; then
         # add database specific users
@@ -146,8 +149,11 @@ EOSQL
     # flush privileges
     echo "FLUSH PRIVILEGES ;" >> "$TEMP_FILE"
 
+    log-helper info "Add MariaDB config..."
+    cat $TEMP_FILE | log-helper debug
+
     # execute config queries
-    ${mysql} < $TEMP_FILE 
+    ${mysql} < $TEMP_FILE
 
     rm $TEMP_FILE
 
