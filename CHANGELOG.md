@@ -2,6 +2,8 @@
 
 ## 10.2.8
   - MariaDB 10.2.8
+  - Move config to assets config folder
+  - Use UTF8 by default
 
 ## 10.2.6
   - MariaDB 10.2.6
