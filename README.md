@@ -115,7 +115,7 @@ simply mount this directory as a volume to `/var/lib/mysql` :
 You can also use data volume containers. Please refer to :
 > [https://docs.docker.com/userguide/dockervolumes/](https://docs.docker.com/userguide/dockervolumes/)
 
-### Administrate your ldap server
+### Administrate your mariadb server
 If you are looking for a simple solution to administrate your MariaDB server you can take a look at our phpMyAdmin docker image:
 > [osixia/phpmyadmin](https://github.com/osixia/docker-phpMyAdmin)
 
@@ -124,7 +124,7 @@ If you are looking for a simple solution to administrate your MariaDB server you
 
 Add your custom **my.cnf** in the directory **image/service/mariadb/assets** and rebuild the image ([see manual build](#manual-build)).
 
-Or you can set your custom config at run time, by mouting your **my.cnf** file to **/container/service/mariadb/assets/my.cnf**
+Or you can set your custom config at run time, by mounting your **my.cnf** file to **/container/service/mariadb/assets/my.cnf**
 
 	docker run --volume /path/to/my.cnf:/container/service/mariadb/assets/my.cnf --detach osixia/mariadb
 
@@ -139,7 +139,7 @@ By default SSL is enable, a certificate is created with the container hostname (
 
 You can set your custom certificate at run time, by mounting a directory containing those files to **/container/service/mariadb/assets/certs** and adjust their name with the following environment variables:
 
-	docker run --volume /path/to/certifates:/container/service/mariadb/assets/certs \
+	docker run --volume /path/to/certificates:/container/service/mariadb/assets/certs \
 	--env MARIADB_SSL_CRT_FILENAME=my-cert.crt \
 	--env MARIADB_SSL_KEY_FILENAME=my-cert.key \
 	--env MARIADB_SSL_CA_CRT_FILENAME=the-ca.crt \
@@ -218,7 +218,7 @@ Used when the container is started without an existing database:
 	```yaml
   - boby: mcD0nald
   - billy: th3k1ng
-  - tomatoe: ketchup
+  - tomatoes: ketchup
 	```
 	If you want to set this variable at docker run command add the tag `#PYTHON2BASH:` and convert the yaml in python:
 
