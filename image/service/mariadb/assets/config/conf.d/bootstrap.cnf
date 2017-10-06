@@ -1,0 +1,17 @@
+[client]
+# Default is Latin1, if you need UTF-8 set this (also in server section)
+default-character-set = utf8
+
+
+[mysqld]
+long_query_time = 5
+slow_query_log = on
+
+query_cache_limit = 13M
+innodb_log_file_size = 52M
+
+collation-server = utf8_general_ci
+collation_server = utf8_general_ci
+init-connect='SET NAMES utf8'
+character-set-server = utf8
+character_set_server = utf8

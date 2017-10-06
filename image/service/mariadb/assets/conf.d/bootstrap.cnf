@@ -1,6 +1,0 @@
-[mysqld]
-long_query_time = 5
-slow_query_log = on
-
-query_cache_limit = 13M
-innodb_log_file_size = 52M

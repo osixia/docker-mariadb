@@ -12,6 +12,7 @@ chown -R mysql:mysql ${CONTAINER_SERVICE_DIR}/mariadb
 # config sql queries
 TEMP_FILE='/tmp/mysql-start.sql'
 
+ln -sf ${CONTAINER_SERVICE_DIR}/mariadb/assets/config/conf.d/* /etc/mysql/conf.d/
 
 FIRST_START_DONE="${CONTAINER_STATE_DIR}/docker-mariadb-first-start-done"
 # container first start
@@ -32,11 +33,11 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   #
   # We have a custom config file
   #
-  if [ -e ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf ]; then
+  if [ -e ${CONTAINER_SERVICE_DIR}/mariadb/assets/config/my.cnf ]; then
 
-    log-helper info "Use config file: ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf ..."
+    log-helper info "Use config file: ${CONTAINER_SERVICE_DIR}/mariadb/assets/config/my.cnf ..."
     rm /etc/mysql/my.cnf
-    cp -f ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf /etc/mysql/my.cnf
+    ln -sf ${CONTAINER_SERVICE_DIR}/mariadb/assets/config/my.cnf /etc/mysql/my.cnf
 
   #
   # Use mariadb default config file
@@ -164,12 +165,7 @@ EOSQL
 
   fi
 
-  cp -f /etc/mysql/my.cnf ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf
-
   touch $FIRST_START_DONE
 fi
-
-ln -sf ${CONTAINER_SERVICE_DIR}/mariadb/assets/my.cnf /etc/mysql/my.cnf
-ln -sf ${CONTAINER_SERVICE_DIR}/mariadb/assets/conf.d/* /etc/mysql/conf.d/
 
 exit 0
