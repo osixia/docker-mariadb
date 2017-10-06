@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.2.9
+  - MariaDB 10.2.9
+  - Upgrade baseimage: light-baseimage:1.1.1
+
 ## 10.2.8
   - MariaDB 10.2.8
   - Move config to assets config folder
