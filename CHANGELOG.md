@@ -1,5 +1,8 @@
 # Changelog
 
+## 10.2.10
+  - MariaDB 10.2.10
+
 ## 10.2.9
   - MariaDB 10.2.9
   - Upgrade baseimage: light-baseimage:1.1.1
