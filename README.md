@@ -6,7 +6,7 @@
 
 [hub]: https://hub.docker.com/r/osixia/mariadb/
 
-Latest release: 10.2.11 - MariaDB 10.2.10 - [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/mariadb/) 
+Latest release: 10.2.11 - MariaDB 10.2.11 - [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/mariadb/) 
 
 **A docker image to run MariaDB with XtraBackup.**
 > [MariaDB](https://mariadb.org/)
