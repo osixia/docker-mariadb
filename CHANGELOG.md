@@ -1,5 +1,8 @@
 # Changelog
 
+## 10.2.12
+  - MariaDB 10.2.12
+
 ## 10.2.11
   - MariaDB 10.2.11
 
