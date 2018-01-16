@@ -5,7 +5,7 @@ MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # MariaDB version
 ARG MARIADB_MAJOR=10.2
-ARG MARIADB_VERSION=10.2.11+maria~stretch
+ARG MARIADB_VERSION=10.2.12+maria~stretch
 
 # Add mysql user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 # https://github.com/docker-library/mariadb/blob/master/10.0/Dockerfile
