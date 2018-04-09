@@ -111,7 +111,13 @@ EOSQL
               if [ $(complex-bash-env isRow "${!database}") = true ]; then
                 database=$(complex-bash-env getRowKeyVarName "${!database}")
               fi
-              [ -n "${!database}" ] && echo "GRANT ALL ON \`${!database}\`.* TO '$u'@'%' ;"  >> "$TEMP_FILE"
+
+              if [ -n "${!database}" ]; then
+                echo "GRANT ALL ON \`${!database}\`.* TO '$u'@'%' ;"  >> "$TEMP_FILE"
+              else
+                echo "GRANT ALL ON *.* TO '$u'@'%' ;"  >> "$TEMP_FILE"
+              fi
+
             done
 
           else
@@ -132,7 +138,9 @@ EOSQL
         database=$(complex-bash-env getRowKeyVarName "${!database}")
       fi
 
-      [ -n "${!database}" ] && echo "CREATE DATABASE IF NOT EXISTS \`${!database}\` ;" >> "$TEMP_FILE"
+      if [ -n "${!database}" ]; then
+        echo "CREATE DATABASE IF NOT EXISTS \`${!database}\` ;" >> "$TEMP_FILE"
+      fi
 
       if [ -n "${users}" ]; then
         # add database specific users
