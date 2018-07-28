@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project follows MariaDB versioning.
 
+## [10.2.14-1] - 2018-04-09
+### Fixed
+  - User and database init
+
 ## [10.2.14] - 2018-03-28
 ### Changed
   - Upgrade MariaDB version to 10.2.14
