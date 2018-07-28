@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project follows MariaDB versioning.
 
+## [10.3.8] - 2018-07-29
+### Changed
+  - Upgrade MariaDB version to 10.3.8
+
 ## [10.2.14-1] - 2018-04-09
 ### Fixed
   - User and database init
@@ -153,6 +157,8 @@ and this project follows MariaDB versioning.
   - Upgrade baseimage to baseimage:0.9.0
   - Change docker command from docker.io to docker
 
+[10.3.8]: https://github.com/osixia/docker-mariadb/compare/v10.2.14-1...v10.3.8
+[10.2.14-1]: https://github.com/osixia/docker-mariadb/compare/v10.2.14...v10.2.14-1
 [10.2.14]: https://github.com/osixia/docker-mariadb/compare/v10.2.13...v10.2.14
 [10.2.13]: https://github.com/osixia/docker-mariadb/compare/v10.2.12...v10.2.13
 [10.2.12]: https://github.com/osixia/docker-mariadb/compare/v10.2.11...v10.2.12

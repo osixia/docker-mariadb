@@ -1,11 +1,10 @@
 # Use osixia/light-baseimage
 # sources: https://github.com/osixia/docker-light-baseimage
 FROM osixia/light-baseimage:1.1.1
-MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # MariaDB version
-ARG MARIADB_MAJOR=10.2
-ARG MARIADB_VERSION=10.2.14+maria~stretch
+ARG MARIADB_MAJOR=10.3
+ARG MARIADB_VERSION=1:10.3.8+maria~stretch
 
 # Add mysql user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 # https://github.com/docker-library/mariadb/blob/master/10.0/Dockerfile
@@ -14,8 +13,6 @@ RUN groupadd -r mysql && useradd -r -g mysql mysql
 # Add MariaDB and Percona repositories
 RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8 \
     && echo "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/debian stretch main" > /etc/apt/sources.list.d/mariadb.list \
-    && apt-key adv --keyserver keys.gnupg.net --recv-keys 0x9334A25F8507EFA5 \
-    && echo "deb https://repo.percona.com/apt stretch main" > /etc/apt/sources.list.d/percona.list \
     && { \
 		     echo 'Package: *'; \
 		     echo 'Pin: release o=MariaDB'; \
@@ -29,12 +26,17 @@ RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8 
 #          https://github.com/osixia/docker-light-baseimage/blob/stable/image/service-available/:ssl-tools/download.sh
 # Install MariaDB and xtrabackup
 RUN apt-get -y update \
+    && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl ca-certificates \
+    && curl -o percona.deb -SL https://repo.percona.com/apt/percona-release_latest.stretch_all.deb \
+    && dpkg -i percona.deb \
+    && apt-get update \
     && /container/tool/add-multiple-process-stack \
     && /container/tool/add-service-available :ssl-tools \
     && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
        mariadb-server=$MARIADB_VERSION \
        percona-xtrabackup-24 \
        qpress \
+    && apt-get remove -y --purge --auto-remove curl ca-certificates \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
