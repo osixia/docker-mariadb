@@ -1,0 +1,48 @@
+#!/bin/bash -e
+
+# Usage: /sbin/mariadb-restore dir
+
+# Example : /sbin/mariadb-restore 2018-10-04-17:28:56
+#           will restore data in /data/backup/2018-10-04-17:28:56
+
+
+FILE=$1
+
+source /container/run/environment.sh
+
+# stop mariadb
+sv stop /container/run/process/mariadb || true
+
+# backup mariadb database
+[ -d /tmp/mysql/restore/ ] && rm -rf /tmp/mysql/restore
+
+dateFileFormat="+%Y%m%dT%H%M%S"
+date=$(date "${dateFileFormat}")
+
+mkdir -p "/tmp/mysql/backup/${date}" /tmp/mysql/restore/zip/ /tmp/mysql/restore/data/
+mv /var/lib/mysql/* "/tmp/mysql/backup/${date}" || true
+
+# decompress backup
+cp "/data/backup/${FILE}" /tmp/mysql/restore/zip/data.gz
+gzip -d /tmp/mysql/restore/zip/data.gz
+
+(
+cd /tmp/mysql/restore/data
+mbstream  -x </tmp/mysql/restore/zip/data
+)
+
+# prepare backup
+mariabackup --prepare --target-dir /tmp/mysql/restore/data \
+      --user="${MARIADB_BACKUP_USER}" --password="${MARIADB_BACKUP_PASSWORD}"
+
+# restore backup
+mariabackup --copy-back --target-dir /tmp/mysql/restore/data\
+      --user="${MARIADB_BACKUP_USER}" --password="${MARIADB_BACKUP_PASSWORD}"
+
+# fix file permissions
+chown -R mysql:mysql /var/lib/mysql/
+
+# restart mariadb
+sv start /container/run/process/mariadb
+
+exit 0

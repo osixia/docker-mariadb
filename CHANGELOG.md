@@ -7,6 +7,7 @@ and this project follows MariaDB versioning.
 ## [10.3.8] - 2018-07-29
 ### Changed
   - Upgrade MariaDB version to 10.3.8
+  - Now use mariabackup instead of xtrabackup
 
 ## [10.2.14-1] - 2018-04-09
 ### Fixed

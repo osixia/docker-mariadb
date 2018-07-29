@@ -8,10 +8,10 @@
 
 Latest release: 10.3.8 - MariaDB 10.3.8 - [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/mariadb/) 
 
-**A docker image to run MariaDB with XtraBackup.**
+**A docker image to run MariaDB with perdiodic backups.**
 > [MariaDB](https://mariadb.org/)
 
-> [Percona XtraBackup](https://www.percona.com/doc/percona-xtrabackup/2.4/index.html)
+> [MariaDB Backup](https://mariadb.com/kb/en/library/mariadb-backup/)
 
 - [osixia/mariadb](#osixiamariadb)
 	- [Quick start](#quick-start)
