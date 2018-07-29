@@ -1,0 +1,19 @@
+#!/bin/bash -e
+
+# Usage: /sbin/mariadb-backup
+
+source /container/run/environment.sh
+
+backupPath="/data/backup"
+
+# delete backups that are over $MARIADB_BACKUP_TTL days
+find "${backupPath}" -type f -mtime +"${MARIADB_BACKUP_TTL}" -exec rm -rf {} \;
+
+dateFileFormat="+%Y%m%dT%H%M%S"
+newBackupFile="${backupPath}/$(date "${dateFileFormat}").gz"
+
+mariabackup --backup --user="${MARIADB_BACKUP_USER}" --password="${MARIADB_BACKUP_PASSWORD}" --stream=xbstream  | gzip > "${newBackupFile}"
+
+chmod 600 "${newBackupFile}"
+
+exit 0

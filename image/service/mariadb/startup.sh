@@ -7,16 +7,16 @@ log-helper level eq trace && set -x
 # fix permissions and ownership of /var/lib/mysql
 chown -R mysql:mysql /var/lib/mysql
 chmod 700 /var/lib/mysql
-chown -R mysql:mysql ${CONTAINER_SERVICE_DIR}/mariadb
+chown -R mysql:mysql "${CONTAINER_SERVICE_DIR}/mariadb"
 
 # config sql queries
 TEMP_FILE='/tmp/mysql-start.sql'
 
-ln -sf ${CONTAINER_SERVICE_DIR}/mariadb/assets/config/conf.d/* /etc/mysql/conf.d/
+ln -sf "${CONTAINER_SERVICE_DIR}"/mariadb/assets/config/conf.d/* /etc/mysql/conf.d/
 
 FIRST_START_DONE="${CONTAINER_STATE_DIR}/docker-mariadb-first-start-done"
 # container first start
-if [ ! -e "$FIRST_START_DONE" ]; then
+if [ ! -e "${FIRST_START_DONE}" ]; then
 
   #
   # SSL config
@@ -26,18 +26,18 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 
     # generate a certificate and key with ssl-helper if LDAP_CRT and LDAP_KEY files don't exists
     # https://github.com/osixia/docker-light-baseimage/blob/stable/image/service-available/:ssl-tools/assets/tool/ssl-helper
-    ssl-helper ${MARIADB_SSL_HELPER_PREFIX} "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CRT_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_KEY_FILENAME" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/$MARIADB_SSL_CA_CRT_FILENAME"
-    chown -R mysql:mysql ${CONTAINER_SERVICE_DIR}/mariadb
+    ssl-helper "${MARIADB_SSL_HELPER_PREFIX}" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/${MARIADB_SSL_CRT_FILENAME}" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/${MARIADB_SSL_KEY_FILENAME}" "${CONTAINER_SERVICE_DIR}/mariadb/assets/certs/${MARIADB_SSL_CA_CRT_FILENAME}"
+    chown -R mysql:mysql "${CONTAINER_SERVICE_DIR}/mariadb"
   fi
 
   #
   # We have a custom config file
   #
-  if [ -e ${CONTAINER_SERVICE_DIR}/mariadb/assets/config/my.cnf ]; then
+  if [ -e "${CONTAINER_SERVICE_DIR}/mariadb/assets/config/my.cnf" ]; then
 
     log-helper info "Use config file: ${CONTAINER_SERVICE_DIR}/mariadb/assets/config/my.cnf ..."
     rm /etc/mysql/my.cnf
-    ln -sf ${CONTAINER_SERVICE_DIR}/mariadb/assets/config/my.cnf /etc/mysql/my.cnf
+    ln -sf "${CONTAINER_SERVICE_DIR}/mariadb/assets/config/my.cnf" /etc/mysql/my.cnf
 
   #
   # Use mariadb default config file
@@ -100,7 +100,7 @@ EOSQL
       for user in $(complex-bash-env iterate "${users}")
       do
         if [ -n "${!user}" ]; then
-          if [ $(complex-bash-env isRow "${!user}") = true ]; then
+          if [ "$(complex-bash-env isRow "${!user}")" = true ]; then
             u=$(complex-bash-env getRowKey "${!user}")
             p=$(complex-bash-env getRowValue "${!user}")
 
@@ -108,7 +108,7 @@ EOSQL
 
             for database in $(complex-bash-env iterate "${databases}")
             do
-              if [ $(complex-bash-env isRow "${!database}") = true ]; then
+              if [ "$(complex-bash-env isRow "${!database}")" = true ]; then
                 database=$(complex-bash-env getRowKeyVarName "${!database}")
               fi
 
@@ -133,7 +133,7 @@ EOSQL
     do
       users=""
       # this datase has users
-      if [ $(complex-bash-env isRow "${!database}") = true ]; then
+      if [ "$(complex-bash-env isRow "${!database}")" = true ]; then
         users=$(complex-bash-env getRowValueVarName "${!database}")
         database=$(complex-bash-env getRowKeyVarName "${!database}")
       fi
@@ -152,28 +152,30 @@ EOSQL
     addUsers MARIADB_USERS MARIADB_DATABASES
 
     # add backup user
-    echo "CREATE USER '$MARIADB_BACKUP_USER'@'localhost' IDENTIFIED BY '$MARIADB_BACKUP_PASSWORD';" >> "$TEMP_FILE"
-    echo "GRANT PROCESS, RELOAD, LOCK TABLES, REPLICATION CLIENT ON *.* TO '$MARIADB_BACKUP_USER'@'localhost';" >> "$TEMP_FILE"
+    {
+      echo "CREATE USER '${MARIADB_BACKUP_USER}'@'localhost' IDENTIFIED BY '${MARIADB_BACKUP_PASSWORD}';"
+       echo "GRANT PROCESS, RELOAD, LOCK TABLES, REPLICATION CLIENT ON *.* TO '${MARIADB_BACKUP_USER}'@'localhost';"
+    } >> "${TEMP_FILE}"
 
     # flush privileges
-    echo "FLUSH PRIVILEGES ;" >> "$TEMP_FILE"
+    echo "FLUSH PRIVILEGES ;" >> "${TEMP_FILE}"
 
     log-helper info "Add MariaDB config..."
-    cat $TEMP_FILE | log-helper debug
+    log-helper debug < ${TEMP_FILE}
 
     # execute config queries
-    ${mysql} < $TEMP_FILE
+    ${mysql} < ${TEMP_FILE}
 
-    rm $TEMP_FILE
+    rm ${TEMP_FILE}
 
     log-helper info "Stop MariaDB..."
     MARIADB_PID=$(cat /var/run/mysqld/mysqld.pid)
-    kill -15 $MARIADB_PID
-    while [ -e /proc/$MARIADB_PID ]; do sleep 0.1; done # wait until mariadb is terminated
+    kill -15 "${MARIADB_PID}"
+    while [ -e "/proc/${MARIADB_PID}" ]; do sleep 0.1; done # wait until mariadb is terminated
 
   fi
 
-  touch $FIRST_START_DONE
+  touch "${FIRST_START_DONE}"
 fi
 
 exit 0
