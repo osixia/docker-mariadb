@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project follows MariaDB versioning.
 
+## [10.3.10] - 2018-11-08
+### Changed
+  - Upgrade MariaDB version to 10.3.10
+
 ## [10.3.8] - 2018-07-29
 ### Changed
   - Upgrade MariaDB version to 10.3.8
