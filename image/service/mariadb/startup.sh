@@ -48,7 +48,7 @@ if [ ! -e "${FIRST_START_DONE}" ]; then
     # Allow remote connection
     sed -Ei --follow-symlinks 's/^(bind-address|log)/#&/' /etc/mysql/my.cnf
     # Disable local files loading, don't reverse lookup hostnames, they are usually another container
-    sed -i --follow-symlinks '/\[mysqld\]/a\local-infile=0\nskip-host-cache\nskip-name-resolve' /etc/mysql/my.cnf
+    sed -i --follow-symlinks '/\[mysqld\]/a\skip-host-cache\nskip-name-resolve' /etc/mysql/my.cnf
   fi
 
   #
