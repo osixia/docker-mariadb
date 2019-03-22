@@ -1,3 +1,3 @@
 # Backup
-{{ MARIADB_BACKUP_CRON_EXP }} root /sbin/mariadb-backup > /proc/self/fd/1 2>/proc/self/fd/2
+{{ MARIADB_BACKUP_CRON_EXP }} root /sbin/mariadb-backup 2>&1 | /usr/bin/logger -t cron_backup
 # empty line
