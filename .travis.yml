@@ -9,8 +9,8 @@ env:
   matrix:
     - TARGET_ARCH=amd64 QEMU_ARCH=x86_64
     - TARGET_ARCH=i386 QEMU_ARCH=i386
-    - TARGET_ARCH=arm32v7 QEMU_ARCH=arm
-    - TARGET_ARCH=arm64v8 QEMU_ARCH=aarch64
+    # - TARGET_ARCH=arm32v7 QEMU_ARCH=arm
+    # - TARGET_ARCH=arm64v8 QEMU_ARCH=aarch64
 
 addons:
   apt:
