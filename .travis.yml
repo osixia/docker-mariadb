@@ -70,23 +70,18 @@ deploy:
     all_branches: true
   script: make push NAME=${NAME} VERSION=${VERSION}-${TARGET_ARCH}
 
-jobs:
-  include:
-    - stage: Manifest creation
-      install: skip
-      script: skip
-      after_deploy:
-        - docker login -u "$DOCKER_USER" -p "$DOCKER_PASS";
-        - docker manifest create ${NAME}:${VERSION} ${NAME}:${VERSION}-amd64;
-          docker manifest annotate ${NAME}:${VERSION} ${NAME}:${VERSION}-amd64 --os linux --arch amd64;
+after_deploy:
+  - docker login -u "$DOCKER_USER" -p "$DOCKER_PASS";
+  - docker manifest create ${NAME}:${VERSION} ${NAME}:${VERSION}-amd64;
+    docker manifest annotate ${NAME}:${VERSION} ${NAME}:${VERSION}-amd64 --os linux --arch amd64;
 
-        # The latest tag is coming from the stable branch of the repo
-        - if [ "${TRAVIS_BRANCH}" == 'stable' ]; then
-          docker manifest create ${NAME}:latest ${NAME}:${VERSION}-amd64;
-          docker manifest annotate ${NAME}:latest ${NAME}:${VERSION}-amd64 --os linux --arch amd64;
-          fi
+  # The latest tag is coming from the stable branch of the repo
+  - if [ "${TRAVIS_BRANCH}" == 'stable' ]; then
+    docker manifest create ${NAME}:latest ${NAME}:${VERSION}-amd64;
+    docker manifest annotate ${NAME}:latest ${NAME}:${VERSION}-amd64 --os linux --arch amd64;
+    fi
 
-        - docker manifest push ${NAME}:${VERSION};
-          if [ "${TRAVIS_BRANCH}" == 'stable' ]; then
-          docker manifest push ${NAME}:latest;
-          fi
+  - docker manifest push ${NAME}:${VERSION};
+    if [ "${TRAVIS_BRANCH}" == 'stable' ]; then
+    docker manifest push ${NAME}:latest;
+    fi
