@@ -8,7 +8,6 @@ env:
     - VERSION="${TRAVIS_BRANCH}-dev"
   matrix:
     - TARGET_ARCH=amd64 QEMU_ARCH=x86_64
-    - TARGET_ARCH=i386 QEMU_ARCH=i386
 
 addons:
   apt:
@@ -78,15 +77,13 @@ jobs:
       script: skip
       after_deploy:
         - docker login -u "$DOCKER_USER" -p "$DOCKER_PASS";
-        - docker manifest create ${NAME}:${VERSION} ${NAME}:${VERSION}-amd64 ${NAME}:${VERSION}-i386;
+        - docker manifest create ${NAME}:${VERSION} ${NAME}:${VERSION}-amd64;
           docker manifest annotate ${NAME}:${VERSION} ${NAME}:${VERSION}-amd64 --os linux --arch amd64;
-          docker manifest annotate ${NAME}:${VERSION} ${NAME}:${VERSION}-i386 --os linux --arch 386;
 
         # The latest tag is coming from the stable branch of the repo
         - if [ "${TRAVIS_BRANCH}" == 'stable' ]; then
-          docker manifest create ${NAME}:latest ${NAME}:${VERSION}-amd64 ${NAME}:${VERSION}-i386;
+          docker manifest create ${NAME}:latest ${NAME}:${VERSION}-amd64;
           docker manifest annotate ${NAME}:latest ${NAME}:${VERSION}-amd64 --os linux --arch amd64;
-          docker manifest annotate ${NAME}:latest ${NAME}:${VERSION}-i386 --os linux --arch 386;
           fi
 
         - docker manifest push ${NAME}:${VERSION};
