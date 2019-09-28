@@ -1,10 +1,10 @@
 # Use osixia/light-baseimage
 # sources: https://github.com/osixia/docker-light-baseimage
-FROM osixia/light-baseimage:1.1.2
+FROM osixia/light-baseimage:release-1.2.0-dev
 
 # MariaDB version
-ARG MARIADB_MAJOR=10.3
-ARG MARIADB_VERSION=1:10.3.15+maria~stretch
+ARG MARIADB_MAJOR=10.4
+ARG MARIADB_VERSION=1:10.4.8+maria~buster
 
 # Add mysql user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 # https://github.com/docker-library/mariadb/blob/master/10.0/Dockerfile
@@ -12,7 +12,7 @@ RUN groupadd -r mysql && useradd -r -g mysql mysql
 
 # Add MariaDB repository
 RUN apt-key adv --no-tty --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8 \
-    && echo "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/debian stretch main" > /etc/apt/sources.list.d/mariadb.list \
+    && echo "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/debian buster main" > /etc/apt/sources.list.d/mariadb.list \
     && { \
     echo 'Package: *'; \
     echo 'Pin: release o=MariaDB'; \

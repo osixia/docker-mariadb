@@ -82,7 +82,7 @@ if [ ! -e "${FIRST_START_DONE}" ]; then
 
     # drop all user and test database
     cat > "$TEMP_FILE" <<-EOSQL
-        DELETE FROM mysql.user ;
+        DELETE FROM mysql.user WHERE user NOT IN ('mysql.sys', 'mysqlxsys', 'root') OR host NOT IN ('localhost') ;
         DROP DATABASE IF EXISTS test ;
 EOSQL
 
