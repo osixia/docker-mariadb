@@ -68,6 +68,7 @@ deploy:
   provider: script
   on:
     all_branches: true
+    condition: $TRAVIS_BRANCH != stable
   script: make push NAME=${NAME} VERSION=${VERSION}-${TARGET_ARCH}
 
 after_deploy:
