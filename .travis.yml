@@ -49,6 +49,9 @@ before_script:
   - if [ -n "$TRAVIS_TAG" ]; then
     VERSION=$(echo "${TRAVIS_TAG}" | sed -e 's/\(.*\)[-v]\(.*\)/\1\2/g');
     fi
+  - if [ "${TRAVIS_BRANCH}" == 'stable' ]; then
+    VERSION="stable"
+    fi
 
 script:
   - make build-nocache NAME=${NAME} VERSION=${VERSION}-${TARGET_ARCH}
@@ -68,7 +71,6 @@ deploy:
   provider: script
   on:
     all_branches: true
-    condition: $TRAVIS_BRANCH != stable
   script: make push NAME=${NAME} VERSION=${VERSION}-${TARGET_ARCH}
 
 after_deploy:
