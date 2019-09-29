@@ -50,7 +50,7 @@ before_script:
     VERSION=$(echo "${TRAVIS_TAG}" | sed -e 's/\(.*\)[-v]\(.*\)/\1\2/g');
     fi
   - if [ "${TRAVIS_BRANCH}" == 'stable' ]; then
-    VERSION="stable"
+    VERSION=stable
     fi
 
 script:
