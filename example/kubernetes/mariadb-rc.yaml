@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: mariadb
-          image: osixia/mariadb:10.4.8
+          image: osixia/mariadb:10.4.10
           volumeMounts:
             - name: mariadb-storage
               mountPath: /var/lib/mysql

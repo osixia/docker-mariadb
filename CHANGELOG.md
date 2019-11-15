@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project follows MariaDB versioning.
 
+## [10.4.10] - 2019-11-15
+### Changed
+  - Upgrade MariaDB version to 10.4.10
+
 ## [10.4.8] - 2019-09-28
 ## Added
   - Multiarch support
