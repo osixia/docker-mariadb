@@ -4,7 +4,7 @@ FROM osixia/light-baseimage:release-1.2.0-dev
 
 # MariaDB version
 ARG MARIADB_MAJOR=10.4
-ARG MARIADB_VERSION=1:10.4.10+maria~buster
+ARG MARIADB_VERSION=1:10.4.11+maria~buster
 
 # Add mysql user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 # https://github.com/docker-library/mariadb/blob/master/10.0/Dockerfile
